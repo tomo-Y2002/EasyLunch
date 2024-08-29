@@ -1,5 +1,6 @@
 PORT: 5000
-OPENAI_API_KEY: "your_openai_api_key"
+COTOMI_API_KEY: "your_cotomi_api_key"
+COTOMI_BASE_URL: "your_cotomi_base_url"
 AZURE_API_KEY: "your_azure_api_key"
 LINE_CHANNEL_ACCESS_TOKEN: "your_line_channel_access_token"
 LINE_CHANNEL_SECRET: "your_line_channel_secret"
