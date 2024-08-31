@@ -36,12 +36,14 @@ class HotPepperApi:
     def __init__(
         self,
         config="config.yaml",
+        id=True,
         name=True,
         logo_image=True,
         name_kana=True,
         address=True,
         budget_average=True,
         budget_name=True,
+        catch=True,
         access=True,
         mobile_access=True,
         urls=True,
@@ -57,6 +59,8 @@ class HotPepperApi:
         ----------
         config : str, optional
             設定ファイルのパス。デフォルトは "config.yaml"。
+        id : bool, optional
+            お店IDを取得するかどうか。デフォルトは True。
         name : bool, optional
             店舗名を取得するかどうか。デフォルトは True。
         logo_image : bool, optional
@@ -69,6 +73,8 @@ class HotPepperApi:
             平均予算を取得するかどうか。デフォルトは True。
         budget_name : bool, optional
             予算名を取得するかどうか。デフォルトは True。
+        catch : bool, optional
+            キャッチコピーを取得するかどうか。デフォルトは True。
         access : bool, optional
             アクセス情報を取得するかどうか。デフォルトは True。
         mobile_access : bool, optional
@@ -111,13 +117,14 @@ class HotPepperApi:
         except KeyError:
             print("設定ファイルにHOT_PEPPER_API_KEYが見つかりません。")
             raise
-
+        self.id = id
         self.name = name
         self.logo_image = logo_image
         self.name_kana = name_kana
         self.address = address
         self.budget_average = budget_average
         self.budget_name = budget_name
+        self.catch = catch
         self.access = access
         self.mobile_access = mobile_access
         self.urls = urls
@@ -194,6 +201,8 @@ class HotPepperApi:
         # お店の情報を取り出す
         for store in stores:
             store_info = {}
+            if self.id:
+                store_info["id"] = store["id"]
             if self.name:
                 store_info["name"] = store["name"]
             if self.logo_image:
@@ -206,12 +215,14 @@ class HotPepperApi:
                 store_info["budget_average"] = store["budget"]["average"]
             if self.budget_name:
                 store_info["budget_name"] = store["budget"]["name"]
+            if self.catch:
+                store_info["catch"] = store["catch"]
             if self.access:
                 store_info["access"] = store["access"]
             if self.mobile_access:
                 store_info["mobile_access"] = store["mobile_access"]
             if self.urls:
-                store_info["urls"] = store["urls"]
+                store_info["urls"] = store["urls"]["pc"]
             if self.photo_l:
                 store_info["photo_l"] = store["photo"]["mobile"]["l"]
             if self.photo_s:
