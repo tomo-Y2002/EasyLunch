@@ -18,38 +18,15 @@ app = Flask(__name__)
 line_bot_handler = LineMessagingApi(config="config.yaml")
 
 
-# メッセージ受信時に「受け取りました」と返信する
-# @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
-# def reply_received(event):
-#     userId = line_bot_handler.get_user_id(event)
-#     msg = "受け取りました"
-#     try:
-#         line_bot_handler.send_text_message(userId, msg)
-#     except Exception as e:
-#         print(f"メッセージ送信エラー: {e}")
-
-
-# メッセージ受信時に後出しでじゃんけんに勝つように返信する
-# @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
-# def reply_rsp(event):
-#     try:
-#         line_bot_handler.reply_to_message_rsp(event)
-#     except Exception as e:
-#         print(f"メッセージ処理エラー: {e}")
-
-
+# メッセージ受信時にuserIdを返信する
 @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
-def reply_flex_msg(event):
-    template = "template.json"
-    template_path = os.path.join(os.path.dirname(__file__), template)
+def reply_received(event):
     userId = line_bot_handler.get_user_id(event)
+    msg = "あなたのuserIdは" + userId + "です"
     try:
-        line_bot_handler.send_flex_message_test(userId, template=template_path)
+        line_bot_handler.send_text_message(userId, msg)
     except Exception as e:
         print(f"メッセージ送信エラー: {e}")
-
-
-# 上記三つの関数は両立しないので注意
 
 
 # @app.routeはclass上に記述することはできず、別のファイルに記述することも煩雑なため、main関数と同じファイル内に記述する

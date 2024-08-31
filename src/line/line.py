@@ -5,7 +5,6 @@ from linebot.v3.messaging import (
     Configuration,
     ApiClient,
     MessagingApi,
-    ReplyMessageRequest,
     TextMessage,
     PushMessageRequest,
 )
@@ -42,8 +41,6 @@ class LineMessagingApi:
         イベントからユーザーIDを取得します。
     send_text_message(user_id, text)
         指定されたユーザーにテキストメッセージを送信します。
-    reply_to_message_rsp(event)
-        じゃんけんの返信を行います。
     send_flex_message_test(user_id, template)
         Flexメッセージのテストを行います。
 
@@ -151,50 +148,6 @@ class LineMessagingApi:
             self.handler.handle(body, signature)
         except Exception as e:
             print(f"ウェブフック処理エラー(handle_webhook): {e}")
-
-    def reply_to_message_rsp(self, event):
-        """
-        じゃんけんの手に対して勝つ手を返信します。
-
-        Parameters
-        ----------
-        event : MessageEvent
-            LINEプラットフォームから受け取ったメッセージイベント。
-
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        Exception
-            メッセージの送信中にエラーが発生した場合。
-
-        Notes
-        -----
-        このメソッドは、ユーザーが送信したじゃんけんの手（グー、チョキ、パー）に対して、
-        必ず勝つ手を返信します。それ以外のメッセージには対応していません。
-        """
-        with ApiClient(self.configuration) as api_client:
-            if event.message.text == "グー":
-                msg = "パー"
-            elif event.message.text == "チョキ":
-                msg = "グー"
-            elif event.message.text == "パー":
-                msg = "チョキ"
-            else:
-                msg = "ごめんね。\nまだ他のメッセージには対応してないよ"
-
-            try:
-                line_bot_api = MessagingApi(api_client)
-                line_bot_api.reply_message_with_http_info(
-                    ReplyMessageRequest(
-                        reply_token=event.reply_token, messages=[TextMessage(text=msg)]
-                    )
-                )
-                # print(f"メッセージ送信(reply_to_message_rsp): {msg}")
-            except Exception as e:
-                print(f"メッセージ送信エラー(reply_to_message_rsp): {e}")
 
     # 送信されたメッセージからuserIdを取得する
     def get_user_id(self, event):
