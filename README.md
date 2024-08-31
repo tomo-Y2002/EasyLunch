@@ -26,8 +26,11 @@ cp config_template.yaml config.yaml
 ```
 生成されたconfig.yamlに記述されているCredentialを埋めます。
 
+#### DBのクレデンシャルの設定
+src/db/docker/README.mdの指示に従って、データベース用のクレデンシャル設定を行います。
+
 ### DBの立ち上げ
-~~ to be filled ~~
+src/db/docker/README.mdの指示に従って、データベースの立ち上げを行います。
 
 ### ボットサーバーの立ち上げ
 以下のコマンドでLINEボットサーバーを立ち上げることが出来ます。
