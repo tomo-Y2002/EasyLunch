@@ -23,8 +23,6 @@ class AWSBedrockClient:
         prompt_system: str,
         image_encoded: str,
         prompt_user: str,
-        max_tokens: int = 1024,
-        temperature: float = 0.1,
     ):
         """
         prompt を生成するメソッド
@@ -32,60 +30,54 @@ class AWSBedrockClient:
             prompt_user : ユーザーのリクエスト
             prompt_system : システムプロンプト。モデルの出力の条件付けを行う
             prompt_image : 画像の base64 エンコードされたもの
-            max_tokens : 生成するトークンの最大数
-            temperature : 生成時のランダム性
         Returns:
             json形式のbody
         """
         prompt = {
             "anthropic_version": "bedrock-2023-05-31",
-            "max_tokens": max_tokens,
-            "temperature": temperature,
         }
         if prompt_system:
             prompt["system"] = prompt_system
 
         messages = []
+        user_message = {
+            "role": "user",
+            "content": [],
+        }
         if image_encoded:
-            messages.append(
+            user_message["content"].append(
                 {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": "image/jpeg",
-                                "data": image_encoded,
-                            },
-                        }
-                    ],
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": "image/jpeg",
+                        "data": image_encoded,
+                    },
                 }
             )
-
         if prompt_user:
-            messages.append(
+            user_message["content"].append(
                 {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": prompt_user,
-                        }
-                    ],
+                    "type": "text",
+                    "text": prompt_user,
                 }
             )
-
+        messages.append(user_message)
         prompt["messages"] = messages
-        return json.dumps(prompt)
+        return prompt
 
-    def call(self, body: json):
+    def call(self, prompt: dict, max_tokens: int = 1024, temperature: float = 0.1):
         """
         AWS Bedrock API を call するメソッド
         Args:
-            body (json): API に渡す json
+            body (dict): API に渡す json
             self.build_prompt を通じて生成された辞書型のデータを受け付ける
+            max_tokens (int): 生成されるトークンの最大数
+            temperature (float): 出力のランダム度合い
         """
+        prompt["max_tokens"] = max_tokens
+        prompt["temperature"] = temperature
+        body = json.dumps(prompt)
         try:
             response = self.client.invoke_model(modelId=self.modelId, body=body)
         except (ClientError, Exception) as e:
