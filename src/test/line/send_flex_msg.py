@@ -15,7 +15,7 @@ from src.line.line import LineMessagingApi
 
 app = Flask(__name__)
 # defaultで"config.yaml"が設定されているので、指定しなくてもOK
-line_bot_handler = LineMessagingApi(config="config.yaml")
+line_bot_handler = LineMessagingApi(config_path="config.yaml")
 
 
 @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
@@ -24,7 +24,7 @@ def reply_flex_msg(event):
     template_path = os.path.join(os.path.dirname(__file__), template)
     userId = line_bot_handler.get_user_id(event)
     try:
-        line_bot_handler.send_flex_message_test(userId, template=template_path)
+        line_bot_handler.send_flex_message_test(userId, template_path=template_path)
     except Exception as e:
         print(f"メッセージ送信エラー: {e}")
 

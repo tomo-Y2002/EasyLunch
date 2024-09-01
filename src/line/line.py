@@ -51,7 +51,7 @@ class LineMessagingApi:
     およびサーバーのポート番号が含まれている必要があります。
     """
 
-    def __init__(self, config="config.yaml"):
+    def __init__(self, config_path="config.yaml"):
         """
         LineMessagingApiクラスのコンストラクタ。
 
@@ -84,40 +84,42 @@ class LineMessagingApi:
         - configuration (Configuration)
         """
         try:
-            with open(config, "r") as file:
-                config_ = yaml.safe_load(file)
+            with open(config_path, "r", encoding="utf-8") as file:
+                config = yaml.safe_load(file)
         except FileNotFoundError:
-            print(f"設定ファイル '{config}' が見つかりません。(LineMessagingApi.init)")
+            print(
+                f"設定ファイル '{config_path}' が見つかりません。(LineMessagingApi.init)"
+            )
             raise
         except yaml.YAMLError as e:
             print(f"YAMLファイルの解析エラー(LineMessagingApi.init): {e}")
             raise
 
-        if "LINE_CHANNEL_SECRET" not in config_:
+        if "LINE_CHANNEL_SECRET" not in config:
             raise KeyError(
                 "LINE_CHANNEL_SECRETがconfig fileに定義されていません。(LineMessagingApi.init)"
             )
-        if "LINE_CHANNEL_ACCESS_TOKEN" not in config_:
+        if "LINE_CHANNEL_ACCESS_TOKEN" not in config:
             raise KeyError(
                 "LINE_CHANNEL_ACCESS_TOKENがconfig fileに定義されていません。(LineMessagingApi.init)"
             )
-        if "PORT" not in config_:
+        if "PORT" not in config:
             raise KeyError(
                 "PORTがconfig fileに定義されていません。(LineMessagingApi.init)"
             )
-        self.line_channel_secret = config_["LINE_CHANNEL_SECRET"]
-        self.line_channel_access_token = config_["LINE_CHANNEL_ACCESS_TOKEN"]
-        self.port = int(config_["PORT"])
+        self.line_channel_secret = config["LINE_CHANNEL_SECRET"]
+        self.line_channel_access_token = config["LINE_CHANNEL_ACCESS_TOKEN"]
+        self.port = int(config["PORT"])
 
         try:
-            self.handler = WebhookHandler(config_["LINE_CHANNEL_SECRET"])
+            self.handler = WebhookHandler(config["LINE_CHANNEL_SECRET"])
         except Exception as e:
             print(f"WebhookHandlerの初期化エラー(LineMessagingApi.init): {e}")
             raise
 
         try:
             self.configuration = Configuration(
-                access_token=config_["LINE_CHANNEL_ACCESS_TOKEN"]
+                access_token=config["LINE_CHANNEL_ACCESS_TOKEN"]
             )
         except Exception as e:
             print(f"Configurationの初期化エラー(LineMessagingApi.init): {e}")
@@ -172,7 +174,7 @@ class LineMessagingApi:
         return event.source.user_id
 
     # 指定したmsgを指定したuserIdの人に送信する
-    def send_text_message(self, userId, msg):
+    def send_text_message(self, userId, content):
         """
         指定したメッセージを指定したユーザーIDの人に送信します。
 
@@ -194,7 +196,7 @@ class LineMessagingApi:
         """
         with ApiClient(self.configuration) as api_client:
             try:
-                msg = TextMessage(text="受け取りました")
+                msg = TextMessage(text=content)
                 line_bot_api = MessagingApi(api_client)
                 line_bot_api.push_message_with_http_info(
                     PushMessageRequest(to=userId, messages=[msg])
@@ -203,7 +205,7 @@ class LineMessagingApi:
             except Exception as e:
                 print(f"メッセージ送信エラー(send_text_message): {e}")
 
-    def send_flex_message_test(self, userId, template="template.json"):
+    def send_flex_message_test(self, userId, template_path="template.json"):
         """
         指定したユーザーIDにFlexメッセージを送信するためのテスト関数です。
 
@@ -226,14 +228,14 @@ class LineMessagingApi:
         メッセージ送信時のエラーが発生した場合は、適切な例外を発生させます。
         """
         try:
-            with open(template, "r") as f:
+            with open(template_path, "r", encoding="utf-8") as f:
                 contents = json.load(f)
         except json.JSONDecodeError as e:
             print(f"JSONファイルの解析エラー(send_flex_message_test): {e}")
             raise
         except FileNotFoundError:
             print(
-                f"テンプレートファイル '{template}' が見つかりません。(send_flex_message_test)"
+                f"テンプレートファイル '{template_path}' が見つかりません。(send_flex_message_test)"
             )
             raise
 

@@ -15,7 +15,7 @@ from src.line.line import LineMessagingApi
 
 app = Flask(__name__)
 # defaultで"config.yaml"が設定されているので、指定しなくてもOK
-line_bot_handler = LineMessagingApi(config="config.yaml")
+line_bot_handler = LineMessagingApi(config_path="config.yaml")
 
 
 # メッセージ受信時にuserIdを返信する
