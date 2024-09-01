@@ -16,12 +16,14 @@ from src.api.hot_pepper import HotPepperApi
 # 引数はdefaultで設定されているので、何も指定しなくてもOK
 api = HotPepperApi(
     config="config.yaml",
+    id=True,
     name=True,
     logo_image=True,
     name_kana=True,
     address=True,
     budget_average=True,
     budget_name=True,
+    catch=True,
     access=True,
     mobile_access=True,
     urls=True,
