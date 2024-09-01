@@ -1,6 +1,5 @@
 import sys
 import os
-import json
 
 # プロジェクトのルートディレクトリへのパスを追加
 # これを追加しないと、src以下のモジュールをimportできない
