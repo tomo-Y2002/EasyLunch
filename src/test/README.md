@@ -37,3 +37,12 @@ ngrok http --domain=<your-domein-name> <your-port-number>
 python ./src/test/line/send_text_msg.py
 ```
 ```config.yaml```にて設定したラインアカウントに任意のメッセージを送ると、ユーザのidが返信されます。
+
+
+### db
+**connector.py**
+src/db/docker/README.md の指示に従ってdockerでDBを立ち上げた後に、以下のコマンドを実行します。
+```bash
+python ./src/test/db/connector.py
+```
+データベースにアクセスして、CRUDの各機能を確認した結果が返ってきます。
