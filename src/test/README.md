@@ -22,3 +22,18 @@ python .\src\test\llm\llm_call.py -t "モデル名"
 -t 以降に使用したいモデル名を指定することで、モデルに応じたクライアントが(aws bedrock, cotomi, azure) から選択されます。  
 画像入力, system prompt, user prompt のすべてを使用したテスト結果が表示されます。  
 現在 ```"モデル名"```　の箇所は "claude 3.5 sonnet" のみ対応しています。
+
+### line
+**send_flex_msg.py**
+```bash
+ngrok http --domain=<your-domein-name> <your-port-number>
+python ./src/test/line/send_flex_msg.py
+```
+```config.yaml```にて設定したラインアカウントに任意のメッセージを送ると、```template.json```で定義されたflex messageが返信されます。
+
+**send_text_msg.py**
+```bash
+ngrok http --domain=<your-domein-name> <your-port-number>
+python ./src/test/line/send_text_msg.py
+```
+```config.yaml```にて設定したラインアカウントに任意のメッセージを送ると、ユーザのidが返信されます。
