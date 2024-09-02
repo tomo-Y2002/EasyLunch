@@ -158,6 +158,8 @@ class HotPepperApi:
         APIキーは初期化時に設定ファイルから読み込まれます。
         """
         print(f"Searching restaurant by condition: {condition}")
+        if isinstance(condition, str):
+            condition = json.loads(condition)
         # リクエストURL(全員共通)
         URL = "http://webservice.recruit.co.jp/hotpepper/gourmet/v1/"
         params = {
