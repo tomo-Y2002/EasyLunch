@@ -31,8 +31,19 @@ api = HotPepperApi(
     open_=True,
     close_=True,
 )
-condition = {"large_area": "Z011", "keyword": "カレー"}
-stores = api.search_restaurant_essential(condition, count=5)
+condition = {
+    "name": "",
+    "budget": "B002, B011",
+    "party_capacity": "",
+    "free_drink": "1",
+    "free_food": "1",
+    "private_room": "1",
+    "parking": "1",
+    "night_view": "1",
+    "lunch": "1",
+    "keyword": "イタリアン",
+}
+stores = api.search_restaurant_essential(condition, count=15)
 
 # storesの内容を確認
 api.print_search_result(stores)
