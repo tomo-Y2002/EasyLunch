@@ -8,6 +8,20 @@ python .\src\test\hot_pepper\search_restaurant_essential_test.py
 ```
 ホットペッパーグルメのAPIを叩いた結果が表示されます。
 
+**match_condition.py**
+```python
+python .\src\test\hot_pepper\match_condition.py
+```
+指定した店舗idが条件に一致するかどうかを確認します。
+
+**change_if_match.py**
+```python
+python .\src\test\hot_pepper\change_if_match.py
+```
+現状は来店履歴店舗idのリスト  
+(ex,`["J001232494", "J001194791", "J001052469"]`)  
+を順に見ていって、その中に条件に合うものがあったら都度5つ目の要素をその店舗と変更するように実装しています。
+
 ### llm
 **aws.py**
 ```bash

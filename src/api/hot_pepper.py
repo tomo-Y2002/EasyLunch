@@ -2,6 +2,7 @@ import yaml
 import builtins
 import requests
 import json
+from typing import Union
 
 
 class HotPepperApi:
@@ -157,9 +158,6 @@ class HotPepperApi:
         このメソッドはHot Pepper APIを使用して検索を行います。
         APIキーは初期化時に設定ファイルから読み込まれます。
         """
-        print(f"Searching restaurant by condition: {condition}")
-        if isinstance(condition, str):
-            condition = json.loads(condition)
         # リクエストURL(全員共通)
         URL = "http://webservice.recruit.co.jp/hotpepper/gourmet/v1/"
         params = {
@@ -256,17 +254,12 @@ class HotPepperApi:
         return self.process_data_essential(stores)
 
     # 結果を表示
-    def print_search_result(self, stores: list):
+    def print_as_json(self, data: Union[list, dict, str]):
         """
-        飲食店のサーチ結果を表示します。
-
-        Parameters
-        ----------
-        stores : list
-            search_restaurant_essential()あるいはsearch_restaurant_all()で取得した店舗情報のリスト
+        list, dict, strをjsonに変換して表示
         """
-        print("search result:")
-        print(json.dumps(stores, ensure_ascii=False, indent=2))
+        print(json.dumps(data, ensure_ascii=False, indent=2))
+        return ""
 
     # 結果の店名を表示
     def print_store_name(self, stores: list):
@@ -278,6 +271,66 @@ class HotPepperApi:
         stores : list
             search_restaurant_essential()あるいはsearch_restaurant_all()で取得した店舗情報のリスト
         """
-        print("store name:")
+        # print("store name:")
+        if not stores:
+            print("店舗情報がありません。")
+            return
+
         for store in stores:
-            print(store["name"])
+            if isinstance(store, dict) and "name" in store:
+                print(store["name"])
+            else:
+                print("不正なストア形式:", store)
+
+        # Noneを返さないようにする
+        return ""
+
+    def match_condition(self, shop_id: str, condition: dict) -> bool:
+        """
+        指定された店舗IDが条件に一致するかどうかを確認します。
+
+        Parameters
+        ----------
+        shop_id : str
+            店舗ID
+        condition : dict
+            検索条件を含む辞書。例: {"large_area": "Z011", "keyword": "カレー"}
+
+        Returns
+        -------
+        bool: 店舗idで指定した店が条件に一致する場合はTrue, そうでない場合はFalse
+        """
+        # conditionにidの条件を追加
+        condition["id"] = shop_id
+        # 条件に基づいて店舗情報を検索
+        stores = self.search_restaurant_essential(condition)
+        if stores:
+            return True
+        else:
+            return False
+
+    def change_if_match(self, shop_ids: list, condition: dict, stores: list) -> list:
+        """
+        来店履歴の店舗idが条件に一致する場合は、storesの最後をその店舗の情報に変更します。
+
+        Parameters
+        ----------
+        shop_ids : list
+            店舗IDのリスト
+        condition : dict
+            検索条件を含む辞書。例: {"large_area": "Z011", "keyword": "カレー"}
+        stores : list
+            店舗情報のリスト
+
+        Returns
+        -------
+        list: 変更後のstores
+        """
+        for shop_id in shop_ids:
+            if self.match_condition(shop_id, condition):
+                # その店舗がstoresにまだ入っていない場合は最後を入れ替え
+                if shop_id not in stores:
+                    stores[-1] = self.search_restaurant_essential(
+                        {"id": shop_id}, count=1
+                    )[0]
+        return stores

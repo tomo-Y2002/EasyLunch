@@ -37,19 +37,28 @@ condition = {
     "party_capacity": "",
     "free_drink": "1",
     "free_food": "1",
-    "private_room": "0",
-    "parking": "0",
-    "night_view": "0",
-    "lunch": "0",
+    "private_room": "1",
+    "parking": "1",
+    "night_view": "1",
+    "lunch": "1",
     "keyword": "イタリアン",
 }
-print("以下の条件で検索します")
-api.print_as_json(condition)
-
 stores = api.search_restaurant_essential(condition, count=15)
-# storesの内容を確認
-# print("以下の結果が得られました")
-# api.print_as_json(stores)
 
-print("検索結果：")
-api.print_store_name(stores)
+print("以下の条件で検索しました")
+api.print_as_json(condition)
+id1 = stores[0]["id"]
+match1 = api.match_condition(id1, condition)
+print(f"店舗id {id1}は、", end="")
+if match1:
+    print("条件に一致しました")
+else:
+    print("条件に一致しません")
+
+id2 = "aaaaaaaaaa"
+match2 = api.match_condition(id2, condition)
+print(f"店舗id {id2}は", end="")
+if match2:
+    print("条件に一致しました")
+else:
+    print("条件に一致しません")
