@@ -41,15 +41,22 @@ condition = {
     "parking": "0",
     "night_view": "0",
     "lunch": "0",
-    "keyword": "ラーメン",
+    "keyword": "",
 }
+
+
 print("以下の条件で検索します")
 api.print_as_json(condition)
-
-stores = api.search_restaurant_essential(condition, count=15)
-# storesの内容を確認
-# print("以下の結果が得られました")
-# api.print_as_json(stores)
+stores = api.search_restaurant_essential(condition, count=5)
 
 print("検索結果：")
-api.print_store_name(stores)
+print(api.print_store_name(stores))
+# print(api.print_as_json(stores))
+
+# idの中身は、[検索条件にマッチするが５番目までに入っていない店舗id, 検索条件にマッチするがすでに結果に入っている店舗id, 検索条件にマッチしない店舗id]
+id = ["J001246805", "J001266184", "J001052469"]
+stores = api.change_if_match(id, condition, stores)
+
+print(f"来店履歴店舗id {id}を参照して結果を変更します")
+print("変更後の結果：")
+print(api.print_store_name(stores))
