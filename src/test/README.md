@@ -46,3 +46,10 @@ src/db/docker/README.md の指示に従ってdockerでDBを立ち上げた後に
 python ./src/test/db/connector.py
 ```
 データベースにアクセスして、CRUDの各機能を確認した結果が返ってきます。
+
+**visit.py**
+src/db/docker/README.md の指示に従ってdockerでDBを立ち上げた後に、以下のコマンドを実行します。
+```bash
+python ./src/test/db/visit.py
+```
+来店履歴DBにアクセスして、UseIDを用いた来店履歴の取得と追加を行います。
