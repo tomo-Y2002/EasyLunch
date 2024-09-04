@@ -4,12 +4,9 @@ import json
 from typing import Union
 
 
-class HotPepperApi:
+class HotPepperClient:
     """
     ホットペッパーグルメサーチAPIを利用するためのクラス。
-
-    このクラスは、ホットペッパーグルメサーチAPIを使用して、
-    レストラン情報を検索し、結果を処理するための機能を提供します。
 
     Attributes
     ----------
@@ -28,7 +25,6 @@ class HotPepperApi:
         検索結果を整形して表示します。
     print_store_name(stores)
         店舗名のみを表示します。
-
     """
 
     # configからAPIキーを取得, お店の情報を取得する際に取得する情報を指定
@@ -53,7 +49,7 @@ class HotPepperApi:
         close_=True,
     ):
         """
-        HotPepperApiクラスのコンストラクタ。
+        HotPepperClientクラスのコンストラクタ。
 
         Parameters
         ----------
@@ -139,7 +135,7 @@ class HotPepperApi:
     # condition: dict
     # ex), "condition={large_area": "Z011", "keyword": "カレー",...}
     # returns all the information of restaurants
-    def search_restaurant_all(self, condition: dict, count: int = 5):
+    def search_all(self, condition: dict, count: int = 5):
         """
         指定された条件に基づいてレストランを検索し、全ての情報を返します。
 
@@ -185,8 +181,7 @@ class HotPepperApi:
         return data["results"]["shop"]
 
     # お店の情報を加工して必要な項目を取り出す
-    def process_data_essential(self, stores: list):
-        # process_data_essential メソッドの説明
+    def filter_stores(self, stores: list):
         """
         検索結果から必要な店舗情報を抽出し、加工します。
 
@@ -199,7 +194,7 @@ class HotPepperApi:
         list: 必要な情報のみを含む店舗情報のリスト
 
         説明:
-        このメソッドは、search_restaurant_all メソッドで取得した全ての店舗情報から、
+        このメソッドは、search_all メソッドで取得した全ての店舗情報から、
         インスタンス生成時に指定された項目（name, logo_image, address など）のみを
         抽出します。各店舗の情報は辞書形式で保存され、それらをリストにまとめて返します。
         """
@@ -244,7 +239,7 @@ class HotPepperApi:
     # condition: dict
     # ex), "condition={large_area": "Z011", "keyword": "カレー",...}
     # returns the essential information of restaurants
-    def search_restaurant_essential(self, condition: dict, count: int = 5):
+    def search_essential(self, condition: dict, count: int = 5):
         """
         指定された条件に基づいて飲食店を検索し、必要な情報のみを抽出して返します。
 
@@ -257,11 +252,11 @@ class HotPepperApi:
         ----------
         list: 各店舗の必要な情報を含む辞書のリスト。
         """
-        stores = self.search_restaurant_all(condition, count)
-        return self.process_data_essential(stores)
+        stores = self.search_all(condition, count)
+        return self.filter_stores(stores)
 
     # 結果を表示
-    def print_as_json(self, data: Union[list, dict, str]):
+    def print_json(self, data: Union[list, dict, str]):
         """
         list, dict, strをjsonに変換して表示
         """
@@ -269,14 +264,14 @@ class HotPepperApi:
         return ""
 
     # 結果の店名を表示
-    def print_store_name(self, stores: list):
+    def print_store(self, stores: list):
         """
         飲食店のサーチ結果から店名を表示します。
 
         Parameters
         ----------
         stores : list
-            search_restaurant_essential()あるいはsearch_restaurant_all()で取得した店舗情報のリスト
+            search_essential()あるいはsearch_all()で取得した店舗情報のリスト
         """
         # print("store name:")
         if not stores:
@@ -310,13 +305,13 @@ class HotPepperApi:
         # conditionにidの条件を追加
         condition["id"] = shop_id
         # 条件に基づいて店舗情報を検索
-        stores = self.search_restaurant_essential(condition)
+        stores = self.search_essential(condition)
         if stores:
             return True
         else:
             return False
 
-    def change_if_match(self, shop_ids: list, condition: dict, stores: list) -> list:
+    def rerank(self, shop_ids: list, condition: dict, stores: list) -> list:
         """
         来店履歴の店舗idが条件に一致する場合は、storesの最後をその店舗の情報に変更します。
 
@@ -339,7 +334,5 @@ class HotPepperApi:
             if self.match_condition(shop_id, condition):
                 # その店舗がstoresにまだ入っていない場合は最後を入れ替え
                 if shop_id not in shop_ids_in_stores:
-                    stores[-1] = self.search_restaurant_essential(
-                        {"id": shop_id}, count=1
-                    )[0]
+                    stores[-1] = self.search_essential({"id": shop_id}, count=1)[0]
         return stores
