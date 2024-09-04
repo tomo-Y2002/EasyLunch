@@ -14,7 +14,7 @@ from src.api.hot_pepper import HotPepperApi
 
 # 引数はdefaultで設定されているので、何も指定しなくてもOK
 api = HotPepperApi(
-    config="config.yaml",
+    config_path="config.yaml",
     id=True,
     name=True,
     logo_image=True,
@@ -35,29 +35,35 @@ condition = {
     "name": "",
     "budget": "B002, B011",
     "party_capacity": "",
-    "free_drink": "1",
-    "free_food": "1",
-    "private_room": "1",
-    "parking": "1",
-    "night_view": "1",
-    "lunch": "1",
-    "keyword": "イタリアン",
+    "free_drink": "0",
+    "free_food": "0",
+    "private_room": "0",
+    "parking": "0",
+    "night_view": "0",
+    "lunch": "0",
+    "keyword": "",
 }
 stores = api.search_restaurant_essential(condition, count=15)
-
 print("以下の条件で検索しました")
 api.print_as_json(condition)
-id1 = stores[0]["id"]
-match1 = api.match_condition(id1, condition)
-print(f"店舗id {id1}は、", end="")
-if match1:
-    print("条件に一致しました")
+
+print("検索結果：")
+api.print_store_name(stores)
+# 最初の店が存在するなら、その店舗のidを取得して、条件に一致するかどうかを確認する
+if stores:
+    id1 = stores[0]["id"]
+    match1 = api.match_condition(id1, condition)
+    print(f"店舗id {id1}は、", end="")
+    if match1:
+        print("条件に一致しました")
+    else:
+        print("条件に一致しません")
 else:
-    print("条件に一致しません")
+    print("店舗情報がありません")
 
 id2 = "aaaaaaaaaa"
 match2 = api.match_condition(id2, condition)
-print(f"店舗id {id2}は", end="")
+print(f"店舗id {id2}は、", end="")
 if match2:
     print("条件に一致しました")
 else:

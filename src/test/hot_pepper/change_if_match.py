@@ -14,7 +14,7 @@ from src.api.hot_pepper import HotPepperApi
 
 # 引数はdefaultで設定されているので、何も指定しなくてもOK
 api = HotPepperApi(
-    config="config.yaml",
+    config_path="config.yaml",
     id=True,
     name=True,
     logo_image=True,
@@ -33,15 +33,15 @@ api = HotPepperApi(
 )
 condition = {
     "name": "",
-    "budget": "B002, B011",
+    "budget": "",
     "party_capacity": "",
-    "free_drink": "1",
-    "free_food": "1",
+    "free_drink": "0",
+    "free_food": "0",
     "private_room": "0",
     "parking": "0",
     "night_view": "0",
     "lunch": "0",
-    "keyword": "イタリアン",
+    "keyword": "",
 }
 
 
@@ -53,7 +53,8 @@ print("検索結果：")
 print(api.print_store_name(stores))
 # print(api.print_as_json(stores))
 
-id = ["J001232494", "J001194791", "J001052469"]
+# idの中身は、[検索条件にマッチするが５番目までに入っていない店舗id, 検索条件にマッチするがすでに結果に入っている店舗id, 検索条件にマッチしない店舗id]
+id = ["J001246805", "J001266184", "J001052469"]
 stores = api.change_if_match(id, condition, stores)
 
 print(f"来店履歴店舗id {id}を参照して結果を変更します")

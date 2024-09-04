@@ -9,13 +9,13 @@ python .\src\test\hot_pepper\search_restaurant_essential_test.py
 ホットペッパーグルメのAPIを叩いた結果が表示されます。
 
 **match_condition.py**
-```python
+```bash
 python .\src\test\hot_pepper\match_condition.py
 ```
 指定した店舗idが条件に一致するかどうかを確認します。
 
 **change_if_match.py**
-```python
+```bash
 python .\src\test\hot_pepper\change_if_match.py
 ```
 現状は来店履歴店舗idのリスト  

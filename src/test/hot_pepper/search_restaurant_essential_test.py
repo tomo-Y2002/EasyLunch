@@ -14,7 +14,7 @@ from src.api.hot_pepper import HotPepperApi
 
 # 引数はdefaultで設定されているので、何も指定しなくてもOK
 api = HotPepperApi(
-    config="config.yaml",
+    config_path="config.yaml",
     id=True,
     name=True,
     logo_image=True,
@@ -33,15 +33,15 @@ api = HotPepperApi(
 )
 condition = {
     "name": "",
-    "budget": "B002, B011",
+    "budget": "",
     "party_capacity": "",
-    "free_drink": "1",
-    "free_food": "1",
+    "free_drink": "0",
+    "free_food": "0",
     "private_room": "0",
     "parking": "0",
     "night_view": "0",
     "lunch": "0",
-    "keyword": "イタリアン",
+    "keyword": "ラーメン",
 }
 print("以下の条件で検索します")
 api.print_as_json(condition)

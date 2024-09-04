@@ -1,5 +1,4 @@
 import yaml
-import builtins
 import requests
 import json
 from typing import Union
@@ -36,7 +35,7 @@ class HotPepperApi:
     # openは、Pythonの予約語なのでopen_を利用
     def __init__(
         self,
-        config="config.yaml",
+        config_path="config.yaml",
         id=True,
         name=True,
         logo_image=True,
@@ -58,7 +57,7 @@ class HotPepperApi:
 
         Parameters
         ----------
-        config : str, optional
+        config_path : str, optional
             設定ファイルのパス。デフォルトは "config.yaml"。
         id : bool, optional
             お店IDを取得するかどうか。デフォルトは True。
@@ -106,17 +105,20 @@ class HotPepperApi:
         """
 
         try:
-            with builtins.open(config, "r") as file:
+            with open(config_path, "r", encoding="utf-8") as file:
                 self.config = yaml.safe_load(file)
             self.api_key = self.config["HOT_PEPPER_API_KEY"]
+            self.lat = self.config["HOT_PEPPER_LAT"]
+            self.lng = self.config["HOT_PEPPER_LNG"]
+            self.range = self.config["HOT_PEPPER_RANGE"]
         except FileNotFoundError:
-            print(f"設定ファイル '{config}' が見つかりません。")
+            print(f"設定ファイル '{config_path}' が見つかりません。")
             raise
         except yaml.YAMLError as e:
             print(f"YAMLファイルの解析エラー: {e}")
             raise
         except KeyError:
-            print("設定ファイルにHOT_PEPPER_API_KEYが見つかりません。")
+            print("設定ファイルに必要なキーが見つかりません。")
             raise
         self.id = id
         self.name = name
@@ -160,6 +162,11 @@ class HotPepperApi:
         """
         # リクエストURL(全員共通)
         URL = "http://webservice.recruit.co.jp/hotpepper/gourmet/v1/"
+
+        # 小エリアを条件に追加
+        condition["lat"] = self.lat
+        condition["lng"] = self.lng
+        condition["range"] = self.range
         params = {
             "key": self.api_key,
             "format": "json",
@@ -274,7 +281,7 @@ class HotPepperApi:
         # print("store name:")
         if not stores:
             print("店舗情報がありません。")
-            return
+            return ""
 
         for store in stores:
             if isinstance(store, dict) and "name" in store:
@@ -326,10 +333,12 @@ class HotPepperApi:
         -------
         list: 変更後のstores
         """
+        # storesからshop_idのリストを取り出す
+        shop_ids_in_stores = [store["id"] for store in stores]
         for shop_id in shop_ids:
             if self.match_condition(shop_id, condition):
                 # その店舗がstoresにまだ入っていない場合は最後を入れ替え
-                if shop_id not in stores:
+                if shop_id not in shop_ids_in_stores:
                     stores[-1] = self.search_restaurant_essential(
                         {"id": shop_id}, count=1
                     )[0]
