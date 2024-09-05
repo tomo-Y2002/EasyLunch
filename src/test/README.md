@@ -38,14 +38,21 @@ python .\src\test\llm\llm_call.py -t "モデル名"
 現在 ```"モデル名"```　の箇所は "claude 3.5 sonnet" のみ対応しています。
 
 ### line
-**send_flex_msg.py**
+**send_FM.py**
+```bash
+ngrok http --domain=<your-domein-name> <your-port-number>
+python .\src\test\line\send_FM.py
+```
+hotpepperAPIを叩いた結果をフレックスメッセージで返信します。
+
+**send_flex.py**(senf_FM.pyが動いたら消去予定)
 ```bash
 ngrok http --domain=<your-domein-name> <your-port-number>
 python ./src/test/line/send_flex_msg.py
 ```
 ```config.yaml```にて設定したラインアカウントに任意のメッセージを送ると、```template.json```で定義されたflex messageが返信されます。
 
-**send_text_msg.py**
+**send_text.py**
 ```bash
 ngrok http --domain=<your-domein-name> <your-port-number>
 python ./src/test/line/send_text_msg.py

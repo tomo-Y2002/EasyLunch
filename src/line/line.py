@@ -11,7 +11,7 @@ from linebot.v3.messaging import (
 import requests
 
 
-class LineMessagingApi:
+class LineMessagingClient:
     """
     LINEメッセージングAPIを操作するためのクラス。
 
@@ -87,26 +87,20 @@ class LineMessagingApi:
             with open(config_path, "r", encoding="utf-8") as file:
                 config = yaml.safe_load(file)
         except FileNotFoundError:
-            print(
-                f"設定ファイル '{config_path}' が見つかりません。(LineMessagingApi.init)"
-            )
+            print(f"設定ファイル '{config_path}' が見つかりません。")
             raise
         except yaml.YAMLError as e:
-            print(f"YAMLファイルの解析エラー(LineMessagingApi.init): {e}")
+            print(f"YAMLファイルの解析エラー: {e}")
             raise
 
         if "LINE_CHANNEL_SECRET" not in config:
-            raise KeyError(
-                "LINE_CHANNEL_SECRETがconfig fileに定義されていません。(LineMessagingApi.init)"
-            )
+            raise KeyError("LINE_CHANNEL_SECRETがconfig fileに定義されていません。")
         if "LINE_CHANNEL_ACCESS_TOKEN" not in config:
             raise KeyError(
-                "LINE_CHANNEL_ACCESS_TOKENがconfig fileに定義されていません。(LineMessagingApi.init)"
+                "LINE_CHANNEL_ACCESS_TOKENがconfig fileに定義されていません。"
             )
         if "PORT" not in config:
-            raise KeyError(
-                "PORTがconfig fileに定義されていません。(LineMessagingApi.init)"
-            )
+            raise KeyError("PORTがconfig fileに定義されていません。")
         self.line_channel_secret = config["LINE_CHANNEL_SECRET"]
         self.line_channel_access_token = config["LINE_CHANNEL_ACCESS_TOKEN"]
         self.port = int(config["PORT"])
@@ -122,7 +116,7 @@ class LineMessagingApi:
                 access_token=config["LINE_CHANNEL_ACCESS_TOKEN"]
             )
         except Exception as e:
-            print(f"Configurationの初期化エラー(LineMessagingApi.init): {e}")
+            print(f"Configurationの初期化エラー: {e}")
             raise
 
     def handle_webhook(self, body, signature):
@@ -152,7 +146,7 @@ class LineMessagingApi:
             print(f"ウェブフック処理エラー(handle_webhook): {e}")
 
     # 送信されたメッセージからuserIdを取得する
-    def get_user_id(self, event):
+    def get_id(self, event):
         """
         送信されたメッセージからユーザーIDを取得します。
 
@@ -174,7 +168,7 @@ class LineMessagingApi:
         return event.source.user_id
 
     # 指定したmsgを指定したuserIdの人に送信する
-    def send_text_message(self, userId, content):
+    def send_text(self, userId, content):
         """
         指定したメッセージを指定したユーザーIDの人に送信します。
 
@@ -203,9 +197,10 @@ class LineMessagingApi:
                 )
                 # print(f"{userId}にメッセージ送信(send_text_message): {msg}")
             except Exception as e:
-                print(f"メッセージ送信エラー(send_text_message): {e}")
+                print(f"メッセージ送信エラー: {e}")
 
-    def send_flex_message_test(self, userId, template_path="template.json"):
+    # send_FM.pyが動いたら消去予定
+    def send_flex_test(self, userId, template_path="template.json"):
         """
         指定したユーザーIDにFlexメッセージを送信するためのテスト関数です。
 
@@ -231,12 +226,10 @@ class LineMessagingApi:
             with open(template_path, "r", encoding="utf-8") as f:
                 contents = json.load(f)
         except json.JSONDecodeError as e:
-            print(f"JSONファイルの解析エラー(send_flex_message_test): {e}")
+            print(f"JSONファイルの解析エラー: {e}")
             raise
         except FileNotFoundError:
-            print(
-                f"テンプレートファイル '{template_path}' が見つかりません。(send_flex_message_test)"
-            )
+            print(f"テンプレートファイル '{template_path}' が見つかりません。")
             raise
 
         access_token = self.line_channel_access_token
@@ -262,8 +255,85 @@ class LineMessagingApi:
             response = requests.post(url, headers=headers, json=data)
             response.raise_for_status()  # HTTPエラーがあれば例外を発生させる
         except requests.RequestException as e:
-            print(f"Flex Message送信エラー(send_flex_message_test): {e}")
+            print(f"Flex Message送信エラー: {e}")
 
-    # ToDo: 以下の関数を実装する
-    #   json形式のtextを入力として、flex_messageのjson形式に埋め込むための関数 : create_flex_message(self, text) -> contents
-    #   flex_messageを送信するための関数: send_flex_message(self, userId, contents)
+    def create_FM(self, stores: list, template_path="./src/line/template.json"):
+        """
+        storesのリストをもとに、flex messageを作成する関数
+
+        Parameters
+        ----------
+        stores : list
+            ストアのリスト
+        template_path : str, optional
+            Flexメッセージのテンプレートファイルのパス。デフォルトは"./src/line/template.json"。
+
+        Returns
+        -------
+        data : str
+            flex message
+        """
+        data = {"type": "carousel", "contents": []}
+        try:
+            with open(template_path, "r", encoding="utf-8") as f:
+                template = json.load(f)
+        except FileNotFoundError:
+            print(f"テンプレートファイル '{template_path}' が見つかりません。")
+            raise
+        except json.JSONDecodeError as e:
+            print(f"JSONファイルの解析エラー: {e}")
+            raise
+        except Exception as e:
+            print(f"予期せぬエラーが発生しました: {e}")
+            raise
+
+        for store in stores:
+            contents = template
+            contents["contents"].append(store)
+            data["contents"].append(contents)
+        return data
+
+    def send_FM(self, userId: str, stores: list, config_path="config.yaml"):
+        """
+        storesのリストをもとにflex messageを作成し、userIdに送信する関数です。
+
+        Parameters
+        -----------
+        userId : str
+            ラインのユーザーid
+        stores : list
+            ストアのリスト
+        config_path : str, optional
+            設定ファイルのパス。デフォルトは"config.yaml"。
+        """
+        try:
+            with open(config_path, "r") as f:
+                config = yaml.safe_load(f)
+            access_token = config["LINE_CHANNEL_ACCESS_TOKEN"]
+        except FileNotFoundError:
+            print(f"設定ファイルが見つかりません: {config_path}")
+            return
+        except yaml.YAMLError as e:
+            print(f"YAMLファイルの解析エラー: {e}")
+            return
+        except KeyError:
+            print("LINE_CHANNEL_ACCESS_TOKENが設定ファイルに見つかりません")
+            return
+        url = "https://api.line.me/v2/bot/message/push"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + access_token,
+        }
+        data = {
+            # userIDを指定。
+            "to": userId,
+            "messages": [
+                {
+                    "type": "flex",
+                    "altText": "This is a Flex Message",
+                    "contents": self.create_FM(stores),
+                }
+            ],
+        }
+        response = requests.post(url, headers=headers, json=data)
+        print(response.status_code)
