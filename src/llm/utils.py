@@ -40,7 +40,8 @@ def check_parse_extract(condition: Union[dict, str]) -> bool:
         if isinstance(condition, str):
             condition = json.loads(condition)
         if (
-            "name" in condition
+            "thoughts" in condition
+            and "name" in condition
             and "budget" in condition
             and "party_capacity" in condition
             and "free_drink" in condition
