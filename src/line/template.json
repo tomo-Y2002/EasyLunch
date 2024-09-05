@@ -1,0 +1,125 @@
+{
+    "type": "bubble",
+    "header": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "text": "",
+          "margin": "none",
+          "weight": "bold",
+          "size": "xl",
+          "align": "center"
+        }
+      ],
+      "paddingAll": "md",
+      "paddingTop": "md",
+      "paddingBottom": "md",
+      "paddingStart": "md",
+      "paddingEnd": "md",
+      "borderWidth": "none",
+      "cornerRadius": "none"
+    },
+    "hero": {
+      "type": "image",
+      "url": "",
+      "size": "full",
+      "offsetTop": "none",
+      "offsetBottom": "none",
+      "offsetStart": "none",
+      "offsetEnd": "none",
+      "aspectMode": "cover",
+      "aspectRatio": "3:2"
+    },
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "separator",
+          "margin": "none",
+          "color": "#000000"
+        },
+        {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "",
+              "wrap": true,
+              "offsetTop": "none",
+              "margin": "lg",
+              "size": "sm"
+            }
+          ],
+          "height": "51.19px"
+        },
+        {
+          "type": "separator",
+          "color": "#000000",
+          "margin": "lg"
+        },
+        {
+          "type": "text",
+          "text": "",
+          "margin": "md",
+          "size": "xxs",
+          "weight": "bold"
+        },
+        {
+          "type": "text",
+          "text": "",
+          "size": "xxs",
+          "margin": "xs",
+          "weight": "bold"
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "uri",
+                "label": "詳しく調べる",
+                "uri": ""
+              },
+              "offsetTop": "none",
+              "offsetBottom": "none",
+              "offsetStart": "none",
+              "offsetEnd": "none",
+              "margin": "none",
+              "style": "secondary",
+              "height": "sm",
+              "gravity": "center"
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "postback",
+                "label": "これにする",
+                "data": ""
+              },
+              "style": "secondary",
+              "offsetTop": "none",
+              "offsetBottom": "none",
+              "offsetStart": "none",
+              "offsetEnd": "none",
+              "height": "sm",
+              "margin": "xs"
+            }
+          ],
+          "offsetTop": "sm"
+        }
+      ],
+      "paddingAll": "lg"
+    },
+    "footer": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [],
+      "paddingAll": "xs"
+    }
+}
