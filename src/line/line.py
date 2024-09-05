@@ -9,6 +9,7 @@ from linebot.v3.messaging import (
     PushMessageRequest,
 )
 import requests
+import copy
 
 
 class LineMessagingClient:
@@ -290,11 +291,27 @@ class LineMessagingClient:
             raise
 
         for store in stores:
-            contents = template
-            contents["contents"].append(store)
-            data["contents"].append(contents)
+            contents_format = copy.deepcopy(template)
+            name = store["name"]
+            img = store["photo_l"]
+            catch = store["catch"]
+            address = store["address"]
+            price = store["budget_name"]
+            uri = store["urls"]
+            id = store["id"]
+            contents_format["header"]["contents"][0]["text"] = name
+            contents_format["hero"]["url"] = img
+            contents_format["body"]["contents"][1]["contents"][0]["text"] = catch
+            contents_format["body"]["contents"][3]["text"] = address
+            contents_format["body"]["contents"][4]["text"] = price
+            contents_format["body"]["contents"][5]["contents"][0]["action"]["uri"] = uri
+            contents_format["body"]["contents"][5]["contents"][1]["action"]["data"] = (
+                "店のid" + id
+            )
 
-        result = {
+            data["contents"].append(contents_format)
+
+        carousel = {
             # userIDを指定。
             "to": userId,
             "messages": [
@@ -305,7 +322,7 @@ class LineMessagingClient:
                 }
             ],
         }
-        return result
+        return carousel
 
     def send_flex(self, data: str):
         """
