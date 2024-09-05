@@ -11,20 +11,21 @@ sys.path.append(
         os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     )
 )
-from src.line.line import LineMessagingApi
+from src.line.line import LineMessagingClient
+from src.line.utils import get_id
 
 app = Flask(__name__)
 # defaultで"config.yaml"が設定されているので、指定しなくてもOK
-line_bot_handler = LineMessagingApi(config_path="config.yaml")
+line_bot_handler = LineMessagingClient(config_path="config.yaml")
 
 
 # メッセージ受信時にuserIdを返信する
 @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
 def reply_received(event):
-    userId = line_bot_handler.get_user_id(event)
+    userId = get_id(event)
     msg = "あなたのuserIdは" + userId + "です"
     try:
-        line_bot_handler.send_text_message(userId, msg)
+        line_bot_handler.send_text(userId, msg)
     except Exception as e:
         print(f"メッセージ送信エラー: {e}")
 

@@ -1,5 +1,4 @@
 import yaml
-import json
 from linebot.v3.webhook import WebhookHandler
 from linebot.v3.messaging import (
     Configuration,
@@ -11,7 +10,7 @@ from linebot.v3.messaging import (
 import requests
 
 
-class LineMessagingApi:
+class LineMessagingClient:
     """
     LINEメッセージングAPIを操作するためのクラス。
 
@@ -37,11 +36,9 @@ class LineMessagingApi:
         クラスのインスタンスを初期化し、設定を読み込みます。
     handle_webhook(body, signature)
         Webhookのリクエストを処理します。
-    get_user_id(event)
-        イベントからユーザーIDを取得します。
-    send_text_message(user_id, text)
+    send_text(user_id, text)
         指定されたユーザーにテキストメッセージを送信します。
-    send_flex_message_test(user_id, template)
+    send_flex(data)
         Flexメッセージのテストを行います。
 
     Notes
@@ -87,26 +84,20 @@ class LineMessagingApi:
             with open(config_path, "r", encoding="utf-8") as file:
                 config = yaml.safe_load(file)
         except FileNotFoundError:
-            print(
-                f"設定ファイル '{config_path}' が見つかりません。(LineMessagingApi.init)"
-            )
+            print(f"設定ファイル '{config_path}' が見つかりません。")
             raise
         except yaml.YAMLError as e:
-            print(f"YAMLファイルの解析エラー(LineMessagingApi.init): {e}")
+            print(f"YAMLファイルの解析エラー: {e}")
             raise
 
         if "LINE_CHANNEL_SECRET" not in config:
-            raise KeyError(
-                "LINE_CHANNEL_SECRETがconfig fileに定義されていません。(LineMessagingApi.init)"
-            )
+            raise KeyError("LINE_CHANNEL_SECRETがconfig fileに定義されていません。")
         if "LINE_CHANNEL_ACCESS_TOKEN" not in config:
             raise KeyError(
-                "LINE_CHANNEL_ACCESS_TOKENがconfig fileに定義されていません。(LineMessagingApi.init)"
+                "LINE_CHANNEL_ACCESS_TOKENがconfig fileに定義されていません。"
             )
         if "PORT" not in config:
-            raise KeyError(
-                "PORTがconfig fileに定義されていません。(LineMessagingApi.init)"
-            )
+            raise KeyError("PORTがconfig fileに定義されていません。")
         self.line_channel_secret = config["LINE_CHANNEL_SECRET"]
         self.line_channel_access_token = config["LINE_CHANNEL_ACCESS_TOKEN"]
         self.port = int(config["PORT"])
@@ -122,7 +113,7 @@ class LineMessagingApi:
                 access_token=config["LINE_CHANNEL_ACCESS_TOKEN"]
             )
         except Exception as e:
-            print(f"Configurationの初期化エラー(LineMessagingApi.init): {e}")
+            print(f"Configurationの初期化エラー: {e}")
             raise
 
     def handle_webhook(self, body, signature):
@@ -151,30 +142,8 @@ class LineMessagingApi:
         except Exception as e:
             print(f"ウェブフック処理エラー(handle_webhook): {e}")
 
-    # 送信されたメッセージからuserIdを取得する
-    def get_user_id(self, event):
-        """
-        送信されたメッセージからユーザーIDを取得します。
-
-        Parameters
-        ----------
-        event : MessageEvent
-            LINEプラットフォームから受け取ったメッセージイベント。
-
-        Returns
-        -------
-        str
-            メッセージを送信したユーザーのID。
-
-        Notes
-        -----
-        このメソッドは、イベントオブジェクトからユーザーIDを抽出します。
-        グループやルームからのメッセージの場合も、個別のユーザーIDを返します。
-        """
-        return event.source.user_id
-
     # 指定したmsgを指定したuserIdの人に送信する
-    def send_text_message(self, userId, content):
+    def send_text(self, userId, content):
         """
         指定したメッセージを指定したユーザーIDの人に送信します。
 
@@ -203,41 +172,17 @@ class LineMessagingApi:
                 )
                 # print(f"{userId}にメッセージ送信(send_text_message): {msg}")
             except Exception as e:
-                print(f"メッセージ送信エラー(send_text_message): {e}")
+                print(f"メッセージ送信エラー: {e}")
 
-    def send_flex_message_test(self, userId, template_path="template.json"):
+    def send_flex(self, data: str):
         """
-        指定したユーザーIDにFlexメッセージを送信するためのテスト関数です。
+        作成されたflex messageを送信する関数
 
         Parameters
-        ----------
-        userId : str
-            メッセージを送信する対象のユーザーID。
-        template : str, optional
-            Flexメッセージのテンプレートファイルのパス。デフォルトは"template.json"。
-
-        Returns
-        -------
-        なし
-
-        Notes
-        -----
-        この関数は、指定されたテンプレートファイルからFlexメッセージの内容を読み込み、
-        指定されたユーザーIDに対してプッシュメッセージとして送信します。
-        テンプレートファイルが見つからない場合や、JSONの解析エラー、
-        メッセージ送信時のエラーが発生した場合は、適切な例外を発生させます。
+        -----------
+        data : str
+            フレックスメッセージ
         """
-        try:
-            with open(template_path, "r", encoding="utf-8") as f:
-                contents = json.load(f)
-        except json.JSONDecodeError as e:
-            print(f"JSONファイルの解析エラー(send_flex_message_test): {e}")
-            raise
-        except FileNotFoundError:
-            print(
-                f"テンプレートファイル '{template_path}' が見つかりません。(send_flex_message_test)"
-            )
-            raise
 
         access_token = self.line_channel_access_token
         url = "https://api.line.me/v2/bot/message/push"
@@ -245,25 +190,5 @@ class LineMessagingApi:
             "Content-Type": "application/json",
             "Authorization": "Bearer " + access_token,
         }
-        data = {
-            # userIDを指定。
-            "to": userId,
-            "messages": [
-                {
-                    "type": "flex",
-                    "altText": "This is a Flex Message",
-                    # contentsの内容はjsonファイルから読み込める
-                    "contents": contents,
-                }
-            ],
-        }
-
-        try:
-            response = requests.post(url, headers=headers, json=data)
-            response.raise_for_status()  # HTTPエラーがあれば例外を発生させる
-        except requests.RequestException as e:
-            print(f"Flex Message送信エラー(send_flex_message_test): {e}")
-
-    # ToDo: 以下の関数を実装する
-    #   json形式のtextを入力として、flex_messageのjson形式に埋め込むための関数 : create_flex_message(self, text) -> contents
-    #   flex_messageを送信するための関数: send_flex_message(self, userId, contents)
+        response = requests.post(url, headers=headers, json=data)
+        print(response.status_code)
