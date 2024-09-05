@@ -35,21 +35,20 @@ condition = {
     "name": "",
     "budget": "",
     "party_capacity": "",
-    "free_drink": "0",
-    "free_food": "0",
+    "free_drink": "",
+    "free_food": "",
     "private_room": "0",
     "parking": "0",
     "night_view": "0",
-    "lunch": "0",
-    "keyword": "ラーメン",
+    "keyword": "イタリアン",
 }
 print("以下の条件で検索します")
 api.print_json(condition)
 
 stores = api.search_essential(condition, count=15)
 # storesの内容を確認
-# print("以下の結果が得られました")
-# api.print_as_json(stores)
+print("以下の結果が得られました")
+api.print_json(stores)
 
 print("検索結果：")
 api.print_store(stores)
