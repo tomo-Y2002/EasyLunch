@@ -21,13 +21,16 @@ line_bot_handler = LineMessagingClient(config_path="config.yaml")
 
 @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
 def reply_FM(event):
-    template = "hotpepper.json"
-    with open(template, "r") as f:
+    template = "./src/test/line/hotpepper.json"
+    with open(template, "r", encoding="utf-8") as f:
         stores = json.load(f)
     template_path = "./src/line/template.json"
     userId = line_bot_handler.get_id(event)
     try:
-        line_bot_handler.send_FM(userId, stores, template_path=template_path)
+        flex_message = line_bot_handler.create_carousel(
+            userId, stores, template_path=template_path
+        )
+        line_bot_handler.send_flex(flex_message)
     except Exception as e:
         print(f"メッセージ送信エラー: {e}")
 

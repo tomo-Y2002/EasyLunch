@@ -257,7 +257,9 @@ class LineMessagingClient:
         except requests.RequestException as e:
             print(f"Flex Message送信エラー: {e}")
 
-    def create_FM(self, stores: list, template_path="./src/line/template.json"):
+    def create_carousel(
+        self, userId: str, stores: list, template_path="./src/line/template.json"
+    ) -> str:
         """
         storesのリストをもとに、flex messageを作成する関数
 
@@ -291,49 +293,35 @@ class LineMessagingClient:
             contents = template
             contents["contents"].append(store)
             data["contents"].append(contents)
-        return data
 
-    def send_FM(self, userId: str, stores: list, config_path="config.yaml"):
-        """
-        storesのリストをもとにflex messageを作成し、userIdに送信する関数です。
-
-        Parameters
-        -----------
-        userId : str
-            ラインのユーザーid
-        stores : list
-            ストアのリスト
-        config_path : str, optional
-            設定ファイルのパス。デフォルトは"config.yaml"。
-        """
-        try:
-            with open(config_path, "r") as f:
-                config = yaml.safe_load(f)
-            access_token = config["LINE_CHANNEL_ACCESS_TOKEN"]
-        except FileNotFoundError:
-            print(f"設定ファイルが見つかりません: {config_path}")
-            return
-        except yaml.YAMLError as e:
-            print(f"YAMLファイルの解析エラー: {e}")
-            return
-        except KeyError:
-            print("LINE_CHANNEL_ACCESS_TOKENが設定ファイルに見つかりません")
-            return
-        url = "https://api.line.me/v2/bot/message/push"
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + access_token,
-        }
-        data = {
+        result = {
             # userIDを指定。
             "to": userId,
             "messages": [
                 {
                     "type": "flex",
                     "altText": "This is a Flex Message",
-                    "contents": self.create_FM(stores),
+                    "contents": data,
                 }
             ],
+        }
+        return result
+
+    def send_flex(self, data: str):
+        """
+        作成されたflex messageを送信する関数
+
+        Parameters
+        -----------
+        data : str
+            フレックスメッセージ
+        """
+
+        access_token = self.line_channel_access_token
+        url = "https://api.line.me/v2/bot/message/push"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + access_token,
         }
         response = requests.post(url, headers=headers, json=data)
         print(response.status_code)
