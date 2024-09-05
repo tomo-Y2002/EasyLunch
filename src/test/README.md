@@ -4,19 +4,19 @@
 ### hot_pepper
 **search_restaurant_essential_test.py**
 ```bash
-python .\src\test\hot_pepper\search_restaurant_essential_test.py
+python ./src/test/hot_pepper/search_restaurant_essential_test.py
 ```
 ホットペッパーグルメのAPIを叩いた結果が表示されます。
 
 **match_condition.py**
 ```bash
-python .\src\test\hot_pepper\match_condition.py
+python ./src/test/hot_pepper/match_condition.py
 ```
 指定した店舗idが条件に一致するかどうかを確認します。
 
 **change_if_match.py**
 ```bash
-python .\src\test\hot_pepper\change_if_match.py
+python ./src/test/hot_pepper/change_if_match.py
 ```
 現状は来店履歴店舗idのリスト  
 (ex,`["J001232494", "J001194791", "J001052469"]`)  
@@ -25,37 +25,30 @@ python .\src\test\hot_pepper\change_if_match.py
 ### llm
 **aws.py**
 ```bash
-python .\src\test\llm\aws.py
+python ./src/test/llm/aws.py
 ```
 画像入力, system prompt, user prompt のすべてを使用したテスト結果が表示されます。
 
 **llm_call.py**
 ```bash
-python .\src\test\llm\llm_call.py -t "モデル名"
+python ./src/test/llm/llm_call.py -t "モデル名"
 ```
 -t 以降に使用したいモデル名を指定することで、モデルに応じたクライアントが(aws bedrock, cotomi, azure) から選択されます。  
 画像入力, system prompt, user prompt のすべてを使用したテスト結果が表示されます。  
 現在 ```"モデル名"```　の箇所は "claude 3.5 sonnet" のみ対応しています。
 
 ### line
-**send_FM.py**
+**send_flex.py**
 ```bash
 ngrok http --domain=<your-domein-name> <your-port-number>
-python .\src\test\line\send_FM.py
+python ./src/test/line/send_flex.py
 ```
 hotpepperAPIを叩いた結果をフレックスメッセージで返信します。
-
-**send_flex.py**(senf_FM.pyが動いたら消去予定)
-```bash
-ngrok http --domain=<your-domein-name> <your-port-number>
-python ./src/test/line/send_flex_msg.py
-```
-```config.yaml```にて設定したラインアカウントに任意のメッセージを送ると、```template.json```で定義されたflex messageが返信されます。
 
 **send_text.py**
 ```bash
 ngrok http --domain=<your-domein-name> <your-port-number>
-python ./src/test/line/send_text_msg.py
+python ./src/test/line/send_text.py
 ```
 ```config.yaml```にて設定したラインアカウントに任意のメッセージを送ると、ユーザのidが返信されます。
 

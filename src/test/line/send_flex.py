@@ -13,6 +13,7 @@ sys.path.append(
     )
 )
 from src.line.line import LineMessagingClient
+from src.line.utils import create_carousel, get_id
 
 app = Flask(__name__)
 # defaultで"config.yaml"が設定されているので、指定しなくてもOK
@@ -25,11 +26,9 @@ def reply_FM(event):
     with open(template, "r", encoding="utf-8") as f:
         stores = json.load(f)
     template_path = "./src/line/template.json"
-    userId = line_bot_handler.get_id(event)
+    userId = get_id(event)
     try:
-        flex_message = line_bot_handler.create_carousel(
-            userId, stores, template_path=template_path
-        )
+        flex_message = create_carousel(userId, stores, template_path=template_path)
         line_bot_handler.send_flex(flex_message)
     except Exception as e:
         print(f"メッセージ送信エラー: {e}")

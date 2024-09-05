@@ -1,5 +1,4 @@
 import yaml
-import json
 from linebot.v3.webhook import WebhookHandler
 from linebot.v3.messaging import (
     Configuration,
@@ -9,7 +8,6 @@ from linebot.v3.messaging import (
     PushMessageRequest,
 )
 import requests
-import copy
 
 
 class LineMessagingClient:
@@ -38,11 +36,9 @@ class LineMessagingClient:
         クラスのインスタンスを初期化し、設定を読み込みます。
     handle_webhook(body, signature)
         Webhookのリクエストを処理します。
-    get_user_id(event)
-        イベントからユーザーIDを取得します。
-    send_text_message(user_id, text)
+    send_text(user_id, text)
         指定されたユーザーにテキストメッセージを送信します。
-    send_flex_message_test(user_id, template)
+    send_flex(data)
         Flexメッセージのテストを行います。
 
     Notes
@@ -146,28 +142,6 @@ class LineMessagingClient:
         except Exception as e:
             print(f"ウェブフック処理エラー(handle_webhook): {e}")
 
-    # 送信されたメッセージからuserIdを取得する
-    def get_id(self, event):
-        """
-        送信されたメッセージからユーザーIDを取得します。
-
-        Parameters
-        ----------
-        event : MessageEvent
-            LINEプラットフォームから受け取ったメッセージイベント。
-
-        Returns
-        -------
-        str
-            メッセージを送信したユーザーのID。
-
-        Notes
-        -----
-        このメソッドは、イベントオブジェクトからユーザーIDを抽出します。
-        グループやルームからのメッセージの場合も、個別のユーザーIDを返します。
-        """
-        return event.source.user_id
-
     # 指定したmsgを指定したuserIdの人に送信する
     def send_text(self, userId, content):
         """
@@ -199,130 +173,6 @@ class LineMessagingClient:
                 # print(f"{userId}にメッセージ送信(send_text_message): {msg}")
             except Exception as e:
                 print(f"メッセージ送信エラー: {e}")
-
-    # send_FM.pyが動いたら消去予定
-    def send_flex_test(self, userId, template_path="template.json"):
-        """
-        指定したユーザーIDにFlexメッセージを送信するためのテスト関数です。
-
-        Parameters
-        ----------
-        userId : str
-            メッセージを送信する対象のユーザーID。
-        template : str, optional
-            Flexメッセージのテンプレートファイルのパス。デフォルトは"template.json"。
-
-        Returns
-        -------
-        なし
-
-        Notes
-        -----
-        この関数は、指定されたテンプレートファイルからFlexメッセージの内容を読み込み、
-        指定されたユーザーIDに対してプッシュメッセージとして送信します。
-        テンプレートファイルが見つからない場合や、JSONの解析エラー、
-        メッセージ送信時のエラーが発生した場合は、適切な例外を発生させます。
-        """
-        try:
-            with open(template_path, "r", encoding="utf-8") as f:
-                contents = json.load(f)
-        except json.JSONDecodeError as e:
-            print(f"JSONファイルの解析エラー: {e}")
-            raise
-        except FileNotFoundError:
-            print(f"テンプレートファイル '{template_path}' が見つかりません。")
-            raise
-
-        access_token = self.line_channel_access_token
-        url = "https://api.line.me/v2/bot/message/push"
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + access_token,
-        }
-        data = {
-            # userIDを指定。
-            "to": userId,
-            "messages": [
-                {
-                    "type": "flex",
-                    "altText": "This is a Flex Message",
-                    # contentsの内容はjsonファイルから読み込める
-                    "contents": contents,
-                }
-            ],
-        }
-
-        try:
-            response = requests.post(url, headers=headers, json=data)
-            response.raise_for_status()  # HTTPエラーがあれば例外を発生させる
-        except requests.RequestException as e:
-            print(f"Flex Message送信エラー: {e}")
-
-    def create_carousel(
-        self, userId: str, stores: list, template_path="./src/line/template.json"
-    ) -> str:
-        """
-        storesのリストをもとに、flex messageを作成する関数
-
-        Parameters
-        ----------
-        stores : list
-            ストアのリスト
-        template_path : str, optional
-            Flexメッセージのテンプレートファイルのパス。デフォルトは"./src/line/template.json"。
-
-        Returns
-        -------
-        data : str
-            flex message
-        """
-        data = {"type": "carousel", "contents": []}
-        try:
-            with open(template_path, "r", encoding="utf-8") as f:
-                template = json.load(f)
-        except FileNotFoundError:
-            print(f"テンプレートファイル '{template_path}' が見つかりません。")
-            raise
-        except json.JSONDecodeError as e:
-            print(f"JSONファイルの解析エラー: {e}")
-            raise
-        except Exception as e:
-            print(f"予期せぬエラーが発生しました: {e}")
-            raise
-
-        for store in stores:
-            contents_format = copy.deepcopy(template)
-            name = store["name"]
-            img = store["photo_l"]
-            catch = store["catch"]
-            address = store["address"]
-            price = store["budget_name"]
-            uri = store["urls"]
-            id = store["id"]
-            contents_format["header"]["contents"][0]["text"] = name
-            contents_format["hero"]["url"] = img
-            contents_format["body"]["contents"][1]["contents"][0]["text"] = catch
-            contents_format["body"]["contents"][3]["text"] = address
-            contents_format["body"]["contents"][4]["text"] = price
-            contents_format["body"]["contents"][5]["contents"][0]["action"]["uri"] = uri
-            contents_format["body"]["contents"][5]["contents"][1]["action"]["data"] = (
-                "店のid" + id
-            )
-
-            data["contents"].append(contents_format)
-
-        carousel = {
-            # userIDを指定。
-            "to": userId,
-            "messages": [
-                {
-                    "type": "flex",
-                    "altText": "This is a Flex Message",
-                    "contents": data,
-                }
-            ],
-        }
-        return carousel
 
     def send_flex(self, data: str):
         """

@@ -12,6 +12,7 @@ sys.path.append(
     )
 )
 from src.line.line import LineMessagingClient
+from src.line.utils import get_id
 
 app = Flask(__name__)
 # defaultで"config.yaml"が設定されているので、指定しなくてもOK
@@ -21,7 +22,7 @@ line_bot_handler = LineMessagingClient(config_path="config.yaml")
 # メッセージ受信時にuserIdを返信する
 @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
 def reply_received(event):
-    userId = line_bot_handler.get_id(event)
+    userId = get_id(event)
     msg = "あなたのuserIdは" + userId + "です"
     try:
         line_bot_handler.send_text(userId, msg)
