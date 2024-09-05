@@ -10,10 +10,10 @@ sys.path.append(
 )
 
 # Flake8的には、importの順番が間違っていると警告が出るが、この順番でないと動かない
-from src.api.hot_pepper import HotPepperApi
+from src.api.hot_pepper import HotPepperClient
 
 # 引数はdefaultで設定されているので、何も指定しなくてもOK
-api = HotPepperApi(
+api = HotPepperClient(
     config_path="config.yaml",
     id=True,
     name=True,
@@ -46,17 +46,17 @@ condition = {
 
 
 print("以下の条件で検索します")
-api.print_as_json(condition)
-stores = api.search_restaurant_essential(condition, count=5)
+api.print_json(condition)
+stores = api.search_essential(condition, count=5)
 
 print("検索結果：")
-print(api.print_store_name(stores))
+print(api.print_store(stores))
 # print(api.print_as_json(stores))
 
 # idの中身は、[検索条件にマッチするが５番目までに入っていない店舗id, 検索条件にマッチするがすでに結果に入っている店舗id, 検索条件にマッチしない店舗id]
 id = ["J001246805", "J001266184", "J001052469"]
-stores = api.change_if_match(id, condition, stores)
+stores = api.rerank(id, condition, stores)
 
 print(f"来店履歴店舗id {id}を参照して結果を変更します")
 print("変更後の結果：")
-print(api.print_store_name(stores))
+print(api.print_store(stores))
