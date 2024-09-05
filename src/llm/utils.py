@@ -65,3 +65,66 @@ def check_parse_extract(condition: Union[dict, str]) -> bool:
     except Exception as e:
         print(e)
         return False
+
+
+def check_parse_refine(data: json):
+    """
+    来店履歴を用いた検索候補のrefineに関するllmのjson出力が正しいのかをチェックする
+    """
+    try:
+        if "thought" in data and "id" in data:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        return False
+
+
+def check_parse_filter(data: dict):
+    """
+    問い合わせのフィルタリングに関するllmのjson出力が正しいのかをチェックする
+    """
+    pass
+
+
+def build_user_prompt_refine(
+    request: str, chat: list, stores_visited: list, num_chat: int = 2
+):
+    """
+    来店履歴のなかから、ユーザの要求に合致する店舗があれば抽出する動作のためのuser promptを生成する
+    プロンプトの肥大化を
+    Args:
+        request : ユーザの最新の発話
+        chat : ユーザとBOTの会話履歴
+        例) [(1, 'user456', 'USER', '家系が食べたいです。', datetime.datetime(2024, 8, 31, 8, 46, 54))]
+        stores : グルメAPIからの検索結果の店舗情報
+        stores_visited : 来店履歴DBから取得したstore_idを用いて、グルメAPIで取得した店舗情報 (storesと同じ構造)
+    Returns:
+        prompt : LLMに入力するprompt
+    """
+    chat_formed = ""
+    for idx, remark in enumerate(chat[:num_chat]):  # 会話履歴の最新2つを取得
+        if remark[2] == "USER":
+            chat_formed += f"[{idx}] USER : \n{remark[3]}\n"
+        elif remark[2] == "BOT":
+            # BOT発言における、不要な情報削除の部分は To Do
+            chat_formed += f"[{idx}] BOT : {remark[3]}\n"
+
+    stores_visited_formed = ""
+    for idx, store in enumerate(stores_visited):
+        stores_visited_formed += (
+            f"Store {idx+1}\n {json.dumps(store, ensure_ascii=False, indent=2)}\n"
+        )
+
+    prompt = f"""
+Visited Stores :
+{stores_visited_formed}
+--------------------------------
+Chat History : 
+{chat_formed}
+--------------------------------
+Latest User Request : 
+{request} 
+"""
+    return prompt

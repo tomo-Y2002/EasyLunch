@@ -1,6 +1,8 @@
 import yaml
+import json
 
 from src.llm.aws import AWSBedrockClient
+from src.llm.utils import check_parse_extract, check_parse_refine, check_parse_filter
 
 with open("config.yaml", encoding="utf-8") as f:
     configs = yaml.safe_load(f)
@@ -46,3 +48,50 @@ class LLM:
         return self.client.call(
             prompt=prompt, max_tokens=max_tokens, temperature=temperature
         )
+
+    def _check_parse(self, mode: str, response: str):
+        """
+        llmのjsonの形式が正しいのかをmodeに応じてチェックする
+        Args:
+            mode : チェックするモード。"extract", "refine", "filter" のいずれか
+            reponse : llmの出力
+        Returns:
+            bool : 正しい形式の場合はTrue, それ以外はFalse
+        """
+        if mode == "extract":
+            data = json.loads(response)
+            return check_parse_extract(data)
+        elif mode == "refine":
+            data = json.loads(response)
+            return check_parse_refine(data)
+        elif mode == "filter":
+            data = json.loads(response)
+            return check_parse_filter(data)
+        else:
+            raise ValueError("Invalid mode")
+
+    def call_retry(
+        self, mode: str, prompt: str, max_tokens: int = 1024, temperature: float = 0.1
+    ):
+        """
+        callメソッドがjson出力に失敗する場合にリトライを行うようにする
+        Args:
+            mode : チェックするモード。"extract", "refine", "filter" のいずれか
+            prompt : llmに入力するprompt
+        Returns:
+            response : llmの出力
+        """
+        while True:
+            response = self.call(
+                prompt=prompt, max_tokens=max_tokens, temperature=temperature
+            )
+
+            try:
+                if self._check_parse(mode, response):
+                    break
+                else:
+                    print("Parsed json is invalid. Retrying...")
+            except Exception as e:
+                print(e)
+                print("Failed to parse json. Retrying...")
+        return response
