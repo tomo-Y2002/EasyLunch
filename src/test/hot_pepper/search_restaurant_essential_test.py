@@ -52,7 +52,7 @@ api.print_json(condition)
 stores = api.search_essential(condition, count=15)
 # storesの内容を確認
 # print("以下の結果が得られました")
-# api.print_as_json(stores)
+# api.print_json(stores)
 
 print("検索結果：")
 api.print_store(stores)
