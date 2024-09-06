@@ -40,7 +40,8 @@ def check_parse_extract(condition: Union[dict, str]) -> bool:
         if isinstance(condition, str):
             condition = json.loads(condition)
         if (
-            "name" in condition
+            "thoughts" in condition
+            and "name" in condition
             and "budget" in condition
             and "party_capacity" in condition
             and "free_drink" in condition
@@ -104,7 +105,7 @@ def build_user_prompt_refine(
         prompt : LLMに入力するprompt
     """
     chat_formed = ""
-    for idx, remark in enumerate(chat[:num_chat]):  # 会話履歴の最新2つを取得
+    for idx, remark in enumerate(chat[-num_chat:]):  # 会話履歴の最新2つを取得
         if remark[2] == "USER":
             chat_formed += f"[{idx}] USER : \n{remark[3]}\n"
         elif remark[2] == "BOT":
@@ -121,6 +122,42 @@ def build_user_prompt_refine(
 Visited Stores :
 {stores_visited_formed}
 --------------------------------
+Chat History : 
+{chat_formed}
+--------------------------------
+Latest User Request : 
+{request} 
+"""
+    return prompt
+
+
+def build_user_prompt_extract(request: str, chat: list, num_chat: int = 4):
+    """
+    ユーザの要求を抽出するためのpromptを生成する
+
+    Parameters
+    ----------
+    request : str
+        ユーザの最新の発話
+    chat : list
+        ユーザとBOTの会話履歴
+        例) [0] USER : 家系が食べたいです。
+    num_chat : int
+        会話履歴を最大で何件取得するか
+    Returns
+    -------
+    prompt : str
+        LLMに入力するprompt
+    """
+    chat_formed = ""
+    for idx, remark in enumerate(chat[-num_chat:]):  # 会話履歴の最新の4つを取得
+        if remark[2] == "USER":
+            chat_formed += f"[{idx}] USER : \n{remark[3]}\n"
+        elif remark[2] == "BOT":
+            # BOT発言における、不要な情報削除の部分は To Do
+            chat_formed += f"[{idx}] BOT : {remark[3]}\n"
+
+    prompt = f"""
 Chat History : 
 {chat_formed}
 --------------------------------

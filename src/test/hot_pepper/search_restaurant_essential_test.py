@@ -44,13 +44,12 @@ condition = {
     "name": "",
     "budget": "",
     "party_capacity": "",
-    "free_drink": "0",
-    "free_food": "0",
+    "free_drink": "",
+    "free_food": "",
     "private_room": "0",
     "parking": "0",
     "night_view": "0",
-    "lunch": "0",
-    "keyword": "ラーメン",
+    "keyword": "イタリアン",
 }
 print("以下の条件で検索します")
 api.print_json(condition)

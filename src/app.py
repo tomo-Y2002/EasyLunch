@@ -14,7 +14,7 @@ from src.db.access.chat import ChatDB
 from src.db.access.visit import VisitDB
 from src.llm.llm_call import LLM
 from src.llm.prompt import select_prompt
-from src.llm.utils import build_user_prompt_refine
+from src.llm.utils import build_user_prompt_refine, build_user_prompt_extract
 from src.api.hot_pepper import HotPepperClient
 
 if os.path.exists("config.yaml"):
@@ -98,11 +98,15 @@ def on_reply(event):
     visit_db.close(conn)
     print("来店履歴の取得完了")
 
-    # ユーザの要望から、ホットペッパーAPIに入れるための情報抽出
+    prompt_extract_user = build_user_prompt_extract(
+        request=text,
+        chat=chat_history,
+    )
+    # print(f"prompt_extract_user: {prompt_extract_user}")
     prompt_extract = llm_client._build_prompt(
         prompt_system=select_prompt("extract"),
         image_encoded="",
-        prompt_user=text,  # to be updated
+        prompt_user=prompt_extract_user,
     )
     condition = llm_client.call_retry(mode="extract", prompt=prompt_extract)
     print("情報抽出完了")
