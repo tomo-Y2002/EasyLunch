@@ -44,7 +44,12 @@ visit_db = VisitDB(
     password=os.environ.get("MYSQL_PASSWORD"),
     database=os.environ.get("MYSQL_DATABASE"),
 )
-llm_client = LLM(llm_type="claude 3.5 sonnet")
+llm_client = LLM(
+    llm_type="claude 3.5 sonnet",
+    aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+    region_name=os.environ.get("AWS_REGION"),
+)
 hotpepper_client = HotPepperClient(
     hot_pepper_api_key=os.environ.get("HOT_PEPPER_API_KEY"),
     hot_pepper_lat=os.environ.get("HOT_PEPPER_LAT"),

@@ -9,14 +9,16 @@ class AWSBedrockClient:
     現状 Claude 3.5 Sonnet のみに対応している。
     """
 
-    def __init__(self, configs):
+    def __init__(
+        self, aws_access_key_id: str, aws_secret_access_key: str, region_name: str
+    ):
         self.session = boto3.Session(
-            aws_access_key_id=configs["AWS_ACCESS_KEY_ID"],
-            aws_secret_access_key=configs["AWS_SECRET_ACCESS_KEY"],
-            region_name=configs["AWS_REGION"],
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            region_name=region_name,
         )
         self.client = self.session.client(service_name="bedrock-runtime")
-        self.modelId = "anthropic.claude-3-5-sonnet-20240620-v1:0"
+        self.model_id = "anthropic.claude-3-5-sonnet-20240620-v1:0"
 
     def build_prompt(
         self,
@@ -79,9 +81,9 @@ class AWSBedrockClient:
         prompt["temperature"] = temperature
         body = json.dumps(prompt)
         try:
-            response = self.client.invoke_model(modelId=self.modelId, body=body)
+            response = self.client.invoke_model(modelId=self.model_id, body=body)
         except (ClientError, Exception) as e:
-            print(f"ERROR: Can't invoke '{self.modelId}'. Reason: {e}")
+            print(f"ERROR: Can't invoke '{self.model_id}'. Reason: {e}")
             exit(1)
         response_body = json.loads(response.get("body").read())
         return response_body["content"][0]["text"]
