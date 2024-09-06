@@ -3,7 +3,7 @@ import copy
 
 
 def create_carousel(
-    userId: str, stores: list, template_path="./src/line/template.json"
+    userId: str, stores: list, template_path="./src/line/template.json", num: int = 5
 ) -> str:
     """
     storesのリストをもとに、flex messageを作成する関数
@@ -34,17 +34,36 @@ def create_carousel(
         print(f"予期せぬエラーが発生しました: {e}")
         raise
 
-    for store in stores:
+    for store in stores[:num]:  # numの個数に制限する
         contents_format = copy.deepcopy(template)
-        name = store["name"]
-        img = store[
-            "photo_pc_l"
-        ]  # ここをphotp_pc_lやphoto_pc_m, photo_pc_sに変えてやってみてほしい
-        catch = store["catch"]
-        address = store["address"]
-        price = store["budget_name"]
-        uri = store["urls"]
-        id = store["id"]
+        if store["name"] == "":
+            name = "店の名前がありません"
+        else:
+            name = store["name"]
+        if store["photo_pc_l"] == "":
+            img = "https://imgfp.hotp.jp/IMGH/83/70/P032328370/P032328370_69.jpg"
+        else:
+            img = store["photo_pc_l"]
+        if store["catch"] == "":
+            catch = "キャッチコピーがありません"
+        else:
+            catch = store["catch"]
+        if store["address"] == "":
+            address = "住所がありません"
+        else:
+            address = store["address"]
+        if store["budget_name"] == "":
+            price = "予算がありません"
+        else:
+            price = store["budget_name"]
+        if store["urls"] == "":
+            uri = "https://www.hotpepper.jp"
+        else:
+            uri = store["urls"]
+        if store["id"] == "":
+            id = "J001216679"
+        else:
+            id = store["id"]
         contents_format["header"]["contents"][0]["text"] = name
         contents_format["hero"]["url"] = img
         contents_format["body"]["contents"][1]["contents"][0]["text"] = catch
