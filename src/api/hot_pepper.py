@@ -45,6 +45,8 @@ class HotPepperClient:
         urls=True,
         photo_l=True,
         photo_s=True,
+        photo_pc_l=True,
+        photo_pc_s=True,
         open_=True,
         close_=True,
     ):
@@ -81,6 +83,10 @@ class HotPepperClient:
             大きい写真を取得するかどうか。デフォルトは True。
         photo_s : bool, optional
             小さい写真を取得するかどうか。デフォルトは True。
+        photo_pc_l : bool, optional
+            pc用の大きい写真を取得するかどうか。デフォルトは True。
+        photo_pc_s : bool, optional
+            pc用の小さい写真を取得するかどうか。デフォルトは True。
         open_ : bool, optional
             営業開始時間を取得するかどうか。デフォルトは True。
         close_ : bool, optional
@@ -129,6 +135,8 @@ class HotPepperClient:
         self.urls = urls
         self.photo_l = photo_l
         self.photo_s = photo_s
+        self.photo_pc_l = photo_pc_l
+        self.photo_pc_s = photo_pc_s
         self.open = open_
         self.close = close_
 
@@ -229,6 +237,10 @@ class HotPepperClient:
                 store_info["photo_l"] = store["photo"]["mobile"]["l"]
             if self.photo_s:
                 store_info["photo_s"] = store["photo"]["mobile"]["s"]
+            if self.photo_pc_l:
+                store_info["photo_pc_l"] = store["photo"]["pc"]["l"]
+            if self.photo_pc_s:
+                store_info["photo_pc_s"] = store["photo"]["pc"]["s"]
             if self.open:
                 store_info["open"] = store["open"]
             if self.close:
