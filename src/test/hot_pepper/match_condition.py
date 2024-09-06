@@ -1,5 +1,6 @@
 import sys
 import os
+import yaml
 
 # プロジェクトのルートディレクトリへのパスを追加
 # これを追加しないと、src以下のモジュールをimportできない
@@ -13,8 +14,13 @@ sys.path.append(
 from src.api.hot_pepper import HotPepperClient
 
 # 引数はdefaultで設定されているので、何も指定しなくてもOK
+with open("config.yaml", encoding="utf-8") as f:
+    configs = yaml.safe_load(f)
 api = HotPepperClient(
-    config_path="config.yaml",
+    hot_pepper_api_key=configs["HOT_PEPPER_API_KEY"],
+    hot_pepper_lat=configs["HOT_PEPPER_LAT"],
+    hot_pepper_lng=configs["HOT_PEPPER_LNG"],
+    hot_pepper_range=configs["HOT_PEPPER_RANGE"],
     id=True,
     name=True,
     logo_image=True,
