@@ -126,13 +126,14 @@ def on_reply(event):
     # storesをFlex Messageに変換して、ユーザに返す
     if len(stores) == 0:
         line_bot_handler.send_text(user_id, "条件に合うお店が見つかりませんでした 😢")
+        print(f"条件に合うお店が見つからなかったメッセージを送信")
     else:
         flex_message = create_carousel(
             user_id,
             stores=stores,
         )
         line_bot_handler.send_flex(flex_message)
-    print(f"Flex Messageの送信完了")
+        print(f"Flex Messageの送信完了")
 
     # 会話履歴DBにユーザとBOTの返答を追加
     conn = chat_db.connect()
