@@ -1,4 +1,3 @@
-import yaml
 from linebot.v3.webhook import WebhookHandler
 from linebot.v3.messaging import (
     Configuration,
@@ -48,7 +47,12 @@ class LineMessagingClient:
     およびサーバーのポート番号が含まれている必要があります。
     """
 
-    def __init__(self, config_path="config.yaml"):
+    def __init__(
+        self,
+        line_channel_secret: str,
+        line_channel_access_token: str,
+        port: int,
+    ):
         """
         LineMessagingApiクラスのコンストラクタ。
 
@@ -80,37 +84,19 @@ class LineMessagingClient:
         - handler (WebhookHandler)
         - configuration (Configuration)
         """
-        try:
-            with open(config_path, "r", encoding="utf-8") as file:
-                config = yaml.safe_load(file)
-        except FileNotFoundError:
-            print(f"設定ファイル '{config_path}' が見つかりません。")
-            raise
-        except yaml.YAMLError as e:
-            print(f"YAMLファイルの解析エラー: {e}")
-            raise
-
-        if "LINE_CHANNEL_SECRET" not in config:
-            raise KeyError("LINE_CHANNEL_SECRETがconfig fileに定義されていません。")
-        if "LINE_CHANNEL_ACCESS_TOKEN" not in config:
-            raise KeyError(
-                "LINE_CHANNEL_ACCESS_TOKENがconfig fileに定義されていません。"
-            )
-        if "PORT" not in config:
-            raise KeyError("PORTがconfig fileに定義されていません。")
-        self.line_channel_secret = config["LINE_CHANNEL_SECRET"]
-        self.line_channel_access_token = config["LINE_CHANNEL_ACCESS_TOKEN"]
-        self.port = int(config["PORT"])
+        self.line_channel_secret = line_channel_secret
+        self.line_channel_access_token = line_channel_access_token
+        self.port = port
 
         try:
-            self.handler = WebhookHandler(config["LINE_CHANNEL_SECRET"])
+            self.handler = WebhookHandler(channel_secret=self.line_channel_secret)
         except Exception as e:
             print(f"WebhookHandlerの初期化エラー(LineMessagingApi.init): {e}")
             raise
 
         try:
             self.configuration = Configuration(
-                access_token=config["LINE_CHANNEL_ACCESS_TOKEN"]
+                access_token=self.line_channel_access_token
             )
         except Exception as e:
             print(f"Configurationの初期化エラー: {e}")
@@ -143,7 +129,7 @@ class LineMessagingClient:
             print(f"ウェブフック処理エラー(handle_webhook): {e}")
 
     # 指定したmsgを指定したuserIdの人に送信する
-    def send_text(self, userId, content):
+    def send_text(self, user_id, content):
         """
         指定したメッセージを指定したユーザーIDの人に送信します。
 
@@ -168,7 +154,7 @@ class LineMessagingClient:
                 msg = TextMessage(text=content)
                 line_bot_api = MessagingApi(api_client)
                 line_bot_api.push_message_with_http_info(
-                    PushMessageRequest(to=userId, messages=[msg])
+                    PushMessageRequest(to=user_id, messages=[msg])
                 )
                 # print(f"{userId}にメッセージ送信(send_text_message): {msg}")
             except Exception as e:

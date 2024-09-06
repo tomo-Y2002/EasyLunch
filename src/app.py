@@ -27,7 +27,11 @@ with open("config.yaml", encoding="utf-8") as f:
     configs = yaml.safe_load(f)
 
 app = Flask(__name__)
-line_bot_handler = LineMessagingClient()
+line_bot_handler = LineMessagingClient(
+    line_channel_secret=configs["LINE_CHANNEL_SECRET"],
+    line_channel_access_token=configs["LINE_CHANNEL_ACCESS_TOKEN"],
+    port=configs["PORT"],
+)
 chat_db = ChatDB(
     host=configs["MYSQL_HOST"],
     user=configs["MYSQL_USER"],
