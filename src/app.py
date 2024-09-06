@@ -102,6 +102,7 @@ def on_reply(event):
         res = hotpepper_client.search_essential({"id": info[2]}, count=1)
         if len(res) != 0:
             stores_visited.append(res[0])
+    stores_visited = stores_visited[:10]  # 10件までに制限
     print(f"来店履歴の検索完了")
     prompt_refine_user = build_user_prompt_refine(
         request=text,
@@ -115,18 +116,22 @@ def on_reply(event):
     )
     res_refine = llm_client.call_retry(mode="refine", prompt=prompt_refine)
     id_selected = json.loads(res_refine)["id"]
-    if id_selected != "":
+    shop_ids_in_stores = [store["id"] for store in stores]
+    if id_selected != "" and id_selected not in shop_ids_in_stores:
         stores[-1] = hotpepper_client.search_essential({"id": id_selected}, count=1)[
             0
         ]  # 置換作業
     print(f"来店履歴からの情報追加完了")
 
     # storesをFlex Messageに変換して、ユーザに返す
-    flex_message = create_carousel(
-        user_id,
-        stores=stores,
-    )
-    line_bot_handler.send_flex(flex_message)
+    if len(stores) == 0:
+        line_bot_handler.send_text(user_id, "条件に合うお店が見つかりませんでした 😢")
+    else:
+        flex_message = create_carousel(
+            user_id,
+            stores=stores,
+        )
+        line_bot_handler.send_flex(flex_message)
     print(f"Flex Messageの送信完了")
 
     # 会話履歴DBにユーザとBOTの返答を追加
