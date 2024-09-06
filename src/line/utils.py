@@ -64,13 +64,16 @@ def create_carousel(
             id = "J001216679"
         else:
             id = store["id"]
-        contents_format["header"]["contents"][0]["text"] = name
+        if store["mobile_access"] == "":
+            mobile_access = "モバイルアクセスがありません"
+        else:
+            mobile_access = store["mobile_access"]
         contents_format["hero"]["url"] = img
-        contents_format["body"]["contents"][1]["contents"][0]["text"] = catch
-        contents_format["body"]["contents"][3]["text"] = address
-        contents_format["body"]["contents"][4]["text"] = price
-        contents_format["body"]["contents"][5]["contents"][0]["action"]["uri"] = uri
-        contents_format["body"]["contents"][5]["contents"][1]["action"]["data"] = (
+        contents_format["hero"]["action"]["uri"] = uri
+        contents_format["body"]["contents"][0]["contents"][0]["text"] = name
+        contents_format["body"]["contents"][1]["contents"][0]["text"] = mobile_access
+        contents_format["footer"]["contents"][0]["action"]["uri"] = uri
+        contents_format["footer"]["contents"][2]["action"]["data"] = (
             "店のid" + id
         )
 
