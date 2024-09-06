@@ -40,10 +40,10 @@ def create_carousel(
             name = "店の名前がありません"
         else:
             name = store["name"]
-        if store["photo_l"] == "":
+        if store["photo_pc_l"] == "":
             img = "https://imgfp.hotp.jp/IMGH/83/70/P032328370/P032328370_69.jpg"
         else:
-            img = store["photo_l"]
+            img = store["photo_pc_l"]
         if store["catch"] == "":
             catch = "キャッチコピーがありません"
         else:
