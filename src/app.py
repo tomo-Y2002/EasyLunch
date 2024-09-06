@@ -86,7 +86,7 @@ def on_reply(event):
         request=text,
         chat=chat_history,
     )
-    print(prompt_extract_user)
+    # print(f"prompt_extract_user: {prompt_extract_user}")
     prompt_extract = llm_client._build_prompt(
         prompt_system=select_prompt("extract"),
         image_encoded="",
