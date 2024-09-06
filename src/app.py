@@ -28,21 +28,21 @@ with open("config.yaml", encoding="utf-8") as f:
 
 app = Flask(__name__)
 line_bot_handler = LineMessagingClient(
-    line_channel_secret=configs["LINE_CHANNEL_SECRET"],
-    line_channel_access_token=configs["LINE_CHANNEL_ACCESS_TOKEN"],
-    port=configs["PORT"],
+    line_channel_secret=os.environ.get("LINE_CHANNEL_SECRET"),
+    line_channel_access_token=os.environ.get("LINE_CHANNEL_ACCESS_TOKEN"),
+    port=os.environ.get("PORT"),
 )
 chat_db = ChatDB(
-    host=configs["MYSQL_HOST"],
-    user=configs["MYSQL_USER"],
-    password=configs["MYSQL_PASSWORD"],
-    database=configs["MYSQL_DATABASE"],
+    host=os.environ.get("MYSQL_HOST"),
+    user=os.environ.get("MYSQL_USER"),
+    password=os.environ.get("MYSQL_PASSWORD"),
+    database=os.environ.get("MYSQL_DATABASE"),
 )
 visit_db = VisitDB(
-    host=configs["MYSQL_HOST"],
-    user=configs["MYSQL_USER"],
-    password=configs["MYSQL_PASSWORD"],
-    database=configs["MYSQL_DATABASE"],
+    host=os.environ.get("MYSQL_HOST"),
+    user=os.environ.get("MYSQL_USER"),
+    password=os.environ.get("MYSQL_PASSWORD"),
+    database=os.environ.get("MYSQL_DATABASE"),
 )
 llm_client = LLM(llm_type="claude 3.5 sonnet")
 hotpepper_client = HotPepperClient(
