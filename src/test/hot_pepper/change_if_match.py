@@ -29,6 +29,7 @@ api = HotPepperClient(
     photo_l=True,
     photo_s=True,
     photo_pc_l=True,
+    photo_pc_m=True,
     photo_pc_s=True,
     open_=True,
     close_=True,

@@ -37,7 +37,9 @@ def create_carousel(
     for store in stores:
         contents_format = copy.deepcopy(template)
         name = store["name"]
-        img = store["photo_l"]  # ここをphotp_pc_lやphoto_pc_sに変えてやってみてほしい
+        img = store[
+            "photo_l"
+        ]  # ここをphotp_pc_lやphoto_pc_m, photo_pc_sに変えてやってみてほしい
         catch = store["catch"]
         address = store["address"]
         price = store["budget_name"]

@@ -46,6 +46,7 @@ class HotPepperClient:
         photo_l=True,
         photo_s=True,
         photo_pc_l=True,
+        photo_pc_m=True,
         photo_pc_s=True,
         open_=True,
         close_=True,
@@ -81,6 +82,8 @@ class HotPepperClient:
             URLを取得するかどうか。デフォルトは True。
         photo_l : bool, optional
             大きい写真を取得するかどうか。デフォルトは True。
+        photo_pc_m : bool, optional
+            pc用の中くらいの写真を取得するかどうか。デフォルトは True。
         photo_s : bool, optional
             小さい写真を取得するかどうか。デフォルトは True。
         photo_pc_l : bool, optional
@@ -136,6 +139,7 @@ class HotPepperClient:
         self.photo_l = photo_l
         self.photo_s = photo_s
         self.photo_pc_l = photo_pc_l
+        self.photo_pc_m = photo_pc_m
         self.photo_pc_s = photo_pc_s
         self.open = open_
         self.close = close_
@@ -239,6 +243,8 @@ class HotPepperClient:
                 store_info["photo_s"] = store["photo"]["mobile"]["s"]
             if self.photo_pc_l:
                 store_info["photo_pc_l"] = store["photo"]["pc"]["l"]
+            if self.photo_pc_m:
+                store_info["photo_pc_m"] = store["photo"]["pc"]["m"]
             if self.photo_pc_s:
                 store_info["photo_pc_s"] = store["photo"]["pc"]["s"]
             if self.open:
