@@ -28,6 +28,9 @@ api = HotPepperClient(
     urls=True,
     photo_l=True,
     photo_s=True,
+    photo_pc_l=True,
+    photo_pc_s=True,
+    photo_pc_m=True,
     open_=True,
     close_=True,
 )
@@ -47,8 +50,8 @@ api.print_json(condition)
 
 stores = api.search_essential(condition, count=15)
 # storesの内容を確認
-print("以下の結果が得られました")
-api.print_json(stores)
+# print("以下の結果が得られました")
+# api.print_json(stores)
 
 print("検索結果：")
 api.print_store(stores)
