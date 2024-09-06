@@ -26,7 +26,6 @@ class HotPepperClient:
         店舗名のみを表示します。
     """
 
-    # configからAPIキーを取得, お店の情報を取得する際に取得する情報を指定
     # openは、Pythonの予約語なのでopen_を利用
     def __init__(
         self,
@@ -58,8 +57,14 @@ class HotPepperClient:
 
         Parameters
         ----------
-        config_path : str, optional
-            設定ファイルのパス。デフォルトは "config.yaml"。
+        hot_pepper_api_key: str,
+            ホットペッパーAPI Key
+        hot_pepper_lat: str,
+            検索範囲の中心点の緯度
+        hot_pepper_lng: str,
+            検索範囲の中心点の経度
+        hot_pepper_range: str,
+            検索範囲の広さ
         id : bool, optional
             お店IDを取得するかどうか。デフォルトは True。
         name : bool, optional

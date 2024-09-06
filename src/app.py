@@ -23,9 +23,6 @@ if os.path.exists("config.yaml"):
         for key, value in config_data.items():
             os.environ[key] = str(value)
 
-with open("config.yaml", encoding="utf-8") as f:
-    configs = yaml.safe_load(f)
-
 app = Flask(__name__)
 line_bot_handler = LineMessagingClient(
     line_channel_secret=os.environ.get("LINE_CHANNEL_SECRET"),

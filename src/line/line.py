@@ -31,7 +31,12 @@ class LineMessagingClient:
 
     Methods
     -------
-    __init__(config="config.yaml")
+    __init__(
+        self,
+        line_channel_secret: str,
+        line_channel_access_token: str,
+        port: int,
+    )
         クラスのインスタンスを初期化し、設定を読み込みます。
     handle_webhook(body, signature)
         Webhookのリクエストを処理します。
@@ -60,8 +65,12 @@ class LineMessagingClient:
 
         Parameters
         ----------
-        config : str, optional
-            設定ファイルのパス。デフォルトは "config.yaml"。
+        line_channel_secret: str,
+            LINE BOT のシークレット
+        line_channel_access_token: str,
+            LINE BOT のアクセスキー
+        port: int,
+            サーバーがListenするポート
 
         Raises
         ------
