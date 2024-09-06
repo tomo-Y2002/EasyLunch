@@ -128,10 +128,7 @@ def on_reply(event):
         line_bot_handler.send_text(user_id, "条件に合うお店が見つかりませんでした 😢")
         print(f"条件に合うお店が見つからなかったメッセージを送信")
     else:
-        flex_message = create_carousel(
-            user_id,
-            stores=stores,
-        )
+        flex_message = create_carousel(user_id, stores=stores, num=5)
         line_bot_handler.send_flex(flex_message)
         print(f"Flex Messageの送信完了")
 

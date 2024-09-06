@@ -3,7 +3,7 @@ import copy
 
 
 def create_carousel(
-    userId: str, stores: list, template_path="./src/line/template.json"
+    userId: str, stores: list, template_path="./src/line/template.json", num: int = 5
 ) -> str:
     """
     storesのリストをもとに、flex messageを作成する関数
@@ -34,7 +34,7 @@ def create_carousel(
         print(f"予期せぬエラーが発生しました: {e}")
         raise
 
-    for store in stores:
+    for store in stores[:num]:  # numの個数に制限する
         contents_format = copy.deepcopy(template)
         if store["name"] == "":
             name = "店の名前がありません"
