@@ -1,4 +1,3 @@
-import yaml
 import requests
 import json
 from typing import Union
@@ -27,11 +26,13 @@ class HotPepperClient:
         店舗名のみを表示します。
     """
 
-    # configからAPIキーを取得, お店の情報を取得する際に取得する情報を指定
     # openは、Pythonの予約語なのでopen_を利用
     def __init__(
         self,
-        config_path="config.yaml",
+        hot_pepper_api_key: str,
+        hot_pepper_lat: str,
+        hot_pepper_lng: str,
+        hot_pepper_range: str,
         id=True,
         name=True,
         logo_image=True,
@@ -56,8 +57,14 @@ class HotPepperClient:
 
         Parameters
         ----------
-        config_path : str, optional
-            設定ファイルのパス。デフォルトは "config.yaml"。
+        hot_pepper_api_key: str,
+            ホットペッパーAPI Key
+        hot_pepper_lat: str,
+            検索範囲の中心点の緯度
+        hot_pepper_lng: str,
+            検索範囲の中心点の経度
+        hot_pepper_range: str,
+            検索範囲の広さ
         id : bool, optional
             お店IDを取得するかどうか。デフォルトは True。
         name : bool, optional
@@ -109,22 +116,10 @@ class HotPepperClient:
             設定ファイルにHOT_PEPPER_API_KEYが見つからない場合に発生します。
         """
 
-        try:
-            with open(config_path, "r", encoding="utf-8") as file:
-                self.config = yaml.safe_load(file)
-            self.api_key = self.config["HOT_PEPPER_API_KEY"]
-            self.lat = self.config["HOT_PEPPER_LAT"]
-            self.lng = self.config["HOT_PEPPER_LNG"]
-            self.range = self.config["HOT_PEPPER_RANGE"]
-        except FileNotFoundError:
-            print(f"設定ファイル '{config_path}' が見つかりません。")
-            raise
-        except yaml.YAMLError as e:
-            print(f"YAMLファイルの解析エラー: {e}")
-            raise
-        except KeyError:
-            print("設定ファイルに必要なキーが見つかりません。")
-            raise
+        self.api_key = hot_pepper_api_key
+        self.lat = hot_pepper_lat
+        self.lng = hot_pepper_lng
+        self.range = hot_pepper_range
         self.id = id
         self.name = name
         self.logo_image = logo_image

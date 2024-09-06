@@ -185,7 +185,12 @@ def main():
 
     print("ユーザ側のプロンプト")
     print(prompt_user)
-    client = LLM(llm_type="claude 3.5 sonnet")
+    client = LLM(
+        llm_type="claude 3.5 sonnet",
+        aws_access_key_id=configs["AWS_ACCESS_KEY_ID"],
+        aws_secret_access_key=configs["AWS_SECRET_ACCESS_KEY"],
+        region_name=configs["AWS_REGION"],
+    )
     prompt = client._build_prompt(
         prompt_system=select_prompt("refine"),
         image_encoded="",
