@@ -1,11 +1,7 @@
-import yaml
 import json
 
 from src.llm.aws import AWSBedrockClient
 from src.llm.utils import check_parse_extract, check_parse_refine, check_parse_filter
-
-with open("config.yaml", encoding="utf-8") as f:
-    configs = yaml.safe_load(f)
 
 
 class LLM:
@@ -14,9 +10,25 @@ class LLM:
     aws bedrock, cotomi, azure openai に対応予定
     """
 
-    def __init__(self, llm_type: str):
+    def __init__(
+        self,
+        llm_type: str,
+        aws_access_key_id: str = "",
+        aws_secret_access_key: str = "",
+        region_name: str = "",
+    ):
         if llm_type == "claude 3.5 sonnet":
-            self.client = AWSBedrockClient(configs)
+            if (
+                aws_access_key_id == ""
+                or aws_secret_access_key == ""
+                or region_name == ""
+            ):
+                raise ValueError("Invalid args")
+            self.client = AWSBedrockClient(
+                aws_access_key_id=aws_access_key_id,
+                aws_secret_access_key=aws_secret_access_key,
+                region_name=region_name,
+            )
         else:
             raise ValueError("Invalid type")
 

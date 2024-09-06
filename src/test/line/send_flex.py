@@ -4,6 +4,7 @@ from flask import Flask, request, abort
 from linebot.exceptions import InvalidSignatureError
 from linebot.v3.webhooks import MessageEvent, TextMessageContent
 import json
+import yaml
 
 # プロジェクトのルートディレクトリへのパスを追加
 # これを追加しないと、src以下のモジュールをimportできない
@@ -16,8 +17,14 @@ from src.line.line import LineMessagingClient
 from src.line.utils import create_carousel, get_id
 
 app = Flask(__name__)
-# defaultで"config.yaml"が設定されているので、指定しなくてもOK
-line_bot_handler = LineMessagingClient(config_path="config.yaml")
+with open("config.yaml", encoding="utf-8") as f:
+    configs = yaml.safe_load(f)
+
+line_bot_handler = LineMessagingClient(
+    line_channel_secret=configs["LINE_CHANNEL_SECRET"],
+    line_channel_access_token=configs["LINE_CHANNEL_ACCESS_TOKEN"],
+    port=configs["PORT"],
+)
 
 
 @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
@@ -26,9 +33,9 @@ def reply_FM(event):
     with open(template, "r", encoding="utf-8") as f:
         stores = json.load(f)
     template_path = "./src/line/template.json"
-    userId = get_id(event)
+    user_id = get_id(event)
     try:
-        flex_message = create_carousel(userId, stores, template_path=template_path)
+        flex_message = create_carousel(user_id, stores, template_path=template_path)
         line_bot_handler.send_flex(flex_message)
     except Exception as e:
         print(f"メッセージ送信エラー: {e}")
