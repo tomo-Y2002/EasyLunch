@@ -7,4 +7,4 @@ RUN apk add --no-cache gcc musl-dev linux-headers
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["flask", "run", "--port=${PORT}"]
+CMD flask run --port=${PORT:-8080}
