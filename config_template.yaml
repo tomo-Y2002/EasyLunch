@@ -2,6 +2,8 @@ PORT: 5000
 COTOMI_API_KEY: "your_cotomi_api_key"
 COTOMI_BASE_URL: "your_cotomi_base_url"
 AZURE_API_KEY: "your_azure_api_key"
+AZURE_ENDPOINT: "your_azure_endpoint"
+AZURE_API_VERSION: "your_azure_api_version"
 LINE_CHANNEL_ACCESS_TOKEN: "your_line_channel_access_token"
 LINE_CHANNEL_SECRET: "your_line_channel_secret"
 HOT_PEPPER_API_KEY: "your_hot_pepper_api_key"
