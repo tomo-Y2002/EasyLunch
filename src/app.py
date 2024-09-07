@@ -15,7 +15,7 @@ from src.db.access.visit import VisitDB
 from src.llm.llm_call import LLM
 from src.llm.prompt import select_prompt
 from src.llm.utils import build_user_prompt_refine, build_user_prompt_extract
-from src.api.hot_pepper import HotPepperClient
+from src.api.google_places import GooglePlacesClient
 
 if os.path.exists("config.yaml"):
     with open("config.yaml", encoding="utf-8") as f:
@@ -50,11 +50,8 @@ llm_client = LLM(
     azure_endpoint=os.environ.get("AZURE_ENDPOINT"),
     azure_api_version=os.environ.get("AZURE_API_VERSION"),
 )
-hotpepper_client = HotPepperClient(
-    hot_pepper_api_key=os.environ.get("HOT_PEPPER_API_KEY"),
-    hot_pepper_lat=os.environ.get("HOT_PEPPER_LAT"),
-    hot_pepper_lng=os.environ.get("HOT_PEPPER_LNG"),
-    hot_pepper_range=os.environ.get("HOT_PEPPER_RANGE"),
+places_client = GooglePlacesClient(
+    google_places_api_key=os.environ.get("GOOGLE_PLACES_API_KEY"),
 )
 
 
@@ -107,22 +104,22 @@ def on_reply(event):
     )
     # print(f"prompt_extract_user: {prompt_extract_user}")
     prompt_extract = llm_client._build_prompt(
-        prompt_system=select_prompt("extract"),
+        prompt_system=select_prompt("extract_places"),
         image_encoded="",
         prompt_user=prompt_extract_user,
     )
-    condition = llm_client.call_retry(mode="extract", prompt=prompt_extract)
+    condition = llm_client.call_retry(mode="extract_places", prompt=prompt_extract)
     print("情報抽出完了")
 
     # ホットペッパーAPIで飲食店検索
-    condition = json.loads(condition)
-    stores = hotpepper_client.search_essential(condition, count=15)
-    print("ホットペッパーでの検索完了")
+    query = json.loads(condition)["keyword"]
+    stores = places_client.search_essential(query, count=5)
+    print("Google Placesでの検索完了")
 
     # 来店履歴から、ユーザに沿ったものがあればLLMで抽出して返す
     stores_visited = []
     for info in visit_history:
-        res = hotpepper_client.search_essential({"id": info[2]}, count=1)
+        res = places_client.search_with_id(id=info[2])
         if len(res) != 0:
             stores_visited.append(res[0])
     stores_visited = stores_visited[:10]  # 10件までに制限
@@ -141,9 +138,7 @@ def on_reply(event):
     id_selected = json.loads(res_refine)["id"]
     shop_ids_in_stores = [store["id"] for store in stores]
     if id_selected != "" and id_selected not in shop_ids_in_stores:
-        stores[-1] = hotpepper_client.search_essential({"id": id_selected}, count=1)[
-            0
-        ]  # 置換作業
+        stores[-1] = places_client.search_with_id(id=id_selected)[0]  # 置換作業
     print("来店履歴からの情報追加完了")
 
     # storesをFlex Messageに変換して、ユーザに返す

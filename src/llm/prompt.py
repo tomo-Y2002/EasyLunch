@@ -267,6 +267,188 @@ Output :
 また、注意事項に違反していないかきちんと確認してください。
 
     """
+    prompt_extract_places = """
+あなたはGoogle Places APIのText Search (New)に入力するクエリを生成するためのアシスタントです。
+以下にユーザとボットの会話履歴が与えられます。ユーザは飲食店を問う質問をし、botはその条件にあった店を推薦しています。
+あなたはその会話履歴を分析し、ユーザの希望を所定の形式で抽出してJSONを作成してください。
+
+以下の形式でJSONを出力してください：
+{
+"thoughts": "チャット履歴からなぜそのような抽出条件を設定したかを述べる。",
+"keyword": "検索キーワード。料理のジャンルや店名、その他ユーザの希望を表すキーワードを指定する。"
+}
+
+注意事項：
+1. あなたが出力するキーワードを元に検索を行うGoogle Places APIのText Search (New)は、飲食店のみを検索の対象となるように設定しているので、"keyword"に"レストラン"や"飲食店"といった自明なキーワードは指定しないでください。
+2. "keyword"には、曖昧すぎるワードは使用しないでください。例えば、ユーザが「夏っぽいものを食べたい」と言っていたとしても、"keyword"に"夏"や"夏っぽい"などの言葉は使用せず、"冷やし中華"や"そうめん"などのより具体的な言葉を使用してください
+以下の会話履歴を分析し、上記のJSONを作成してください。回答は厳密にJSON形式で、JSONヘッダーのような余計なテキストは除いてください。
+
+出力は以下の例に従ってください。
+
+Example1
+
+[Input]
+Chat History :
+[0] User: 昼食にラーメンを食べたいです。
+[1] Bot: [
+{
+"id": "J001039795",
+"name": "IZASA",
+"latitude": 35.7123,
+"longitude": 139.7456,
+"rating": 4.2,
+"urls": "https://www.hotpepper.jp/strJ001039795/?vos=nhppalsa000016",
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
+"photo": "https://imgfp.hotp.jp/IMGH/05/09/P020100509/P020100509_168.jpg"
+},
+{
+"id": "J001264417",
+"name": "中華料理&横浜家系ラーメン 本郷家 ",
+"latitude": 35.7098,
+"longitude": 139.7601,
+"rating": 3.8,
+"urls": "https://www.hotpepper.jp/strJ001264417/?vos=nhppalsa000016",
+"price_level": "PRICE_LEVEL_MODERATE",
+"photo": "https://imgfp.hotp.jp/IMGH/47/41/P037424741/P037424741_168.jpg"
+}
+]
+[2] User: 家系が食べたい気分です。あと個室があるとありがたいのですが条件を満たすお店はある？
+[3] Bot: []
+
+--------------------------------
+Latest User Request :
+ないですか。家系で駐車場のある店はある？
+
+[Output]
+{
+"thoughts": "ユーザは昼食に駐車場付きのラーメン屋でを食べたいと思っている。したがって「家系　駐車場あり」を指定する。",
+"keyword": "家系　駐車場あり" 
+}
+
+Example2
+
+[Input]
+Chat History :
+[0] User : 
+10人で食べ飲み放題のお店を探しています。
+[1] Bot: 
+[
+{
+"id": "J001216679",
+"name": "焼肉 テっちゃん",
+"latitude": 35.7201,
+"longitude": 139.7654,
+"rating": 4.0,
+"urls": "https://www.hotpepper.jp/strJ001216679/?vos=nhppalsa000016",
+"price_level": "PRICE_LEVEL_MODERATE",
+"photo": "https://imgfp.hotp.jp/IMGH/81/61/P032328161/P032328161_168.jpg"
+},
+{
+"id": "J001215058",
+"name": "中華料理居酒屋 食為天",
+"latitude": 35.7189,
+"longitude": 139.7612,
+"rating": 3.9,
+"urls": "https://www.hotpepper.jp/strJ001215058/?vos=nhppalsa000016",
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
+"photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
+},
+{
+"id": "J001285639",
+"name": "ラーメンバル ゆきかげ",
+"latitude": 35.7176,
+"longitude": 139.7598,
+"rating": 4.1,
+"urls": "https://www.hotpepper.jp/strJ001285639/?vos=nhppalsa000016",
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
+"photo": "https://imgfp.hotp.jp/IMGH/81/47/P040238147/P040238147_168.jpg"
+}
+]
+
+--------------------------------
+Latest User Request :
+ラーメンや中華料理も捨てがたいけど、肉の気分なんですよねー。あ、そういえば未成年がいたので飲み放題はなしでいいです。
+
+Output :
+{
+"thoughts": "ユーザは10人で食べ放題のお店で、肉を提供してくれるお店を探している。そのため、「肉　食べ放題　大人数」を指定する。",
+"keyword": "肉　食べ放題　大人数"
+}
+
+Example3
+
+[Input]
+Chat History :
+[0] User : 
+何か重たくない系の食べ物が食べたいな。
+[1] Bot : 
+[
+{
+"id": "J001280485",
+"name": "粥や　佐藤",
+"latitude": 35.7189,
+"longitude": 139.6612,
+"rating": 3.9,
+"urls": "https://www.hotpepper.jp/strJ001280485/?vos=nhppalsa000016",
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
+"photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
+},
+{
+"id": "J001280485",
+"name": "たない粥",
+"latitude": 35.7189,
+"longitude": 139.7612,
+"rating": 4.1,
+"urls": "https://www.hotpepper.jp/strJ001280485/?vos=nhppalsa000016",
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
+"photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
+}
+]
+
+
+
+--------------------------------
+Latest User Request :
+他におすすめない？
+
+[Output] 
+{
+"thoughts": "ユーザは「重たくない」という抽象度の高い希望を持っている。「重たくない」とは、消化に良く、胃にもたれにくい食材や料理を指すことが多い。会話履歴を見ると、botは「粥」というキーワードで前回推薦をしたようだが、ユーザは気に入っていないようだ。そこで、今回は消化によく、胃にもたれにくい「うどん」を指定することにする。",
+"keyword": "うどん"
+}
+
+Example4
+[Input]
+Chat History :
+
+--------------------------------
+Latest User Request :
+二日酔いに良い食べ物が食べたいです。
+Output :
+{
+"thoughts": "「二日酔いに良い」というのも抽象度が高い。「二日酔いに良い」というのは、二日酔いによる脱水や栄養不足を補い、消化に優しく胃腸に負担をかけにくいものだと考えられるので、そのような料理が何か考えると、定食や粥などが思い浮かぶ。そこで、「粥」を指定する。",
+"keyword": "粥"
+}
+
+Example5
+[Input]
+Chat History :
+
+--------------------------------
+Latest User Request :
+個室がある食べ放題の居酒屋を探しています。
+
+Output :
+{
+"thoughts": "ユーザは食べ放題で個室がある居酒屋を探している。そこで、「食べ放題　個室　居酒屋」を指定する。",
+"keyword": "居酒屋　個室　居酒屋"
+}
+
+以下に、ユーザの会話履歴を示します。
+回答は厳密にJSON形式で、JSONヘッダーのような余計なテキストは除いてください。さもなければシステムが崩壊します。
+また、注意事項に違反していないかきちんと確認してください。
+
+"""
 
     prompt_filter = """
         to be implemented
@@ -298,15 +480,12 @@ Store 1
  {
   "id": "J001039795",
   "name": "IZASA",
-  "name_kana": "いざさ",
-  "address": "東京都文京区本郷５－２５－１７ドミネンス本郷１０２",
-  "budget_average": "750円",
-  "budget_name": "1501～2000円",
-  "catch": "濃厚！！鶏白湯ラーメン！ クーポンで味玉サービス♪",
-  "access": "地下鉄丸の内線本郷三丁目駅、都営大江戸線本郷三丁目駅より徒歩3分",
-  "mobile_access": "本郷三丁目駅より徒歩3分",
-  "open": "月～土、祝日、祝前日: 11:00～21:30 （料理L.O. 21:00 ドリンクL.O. 21:00）",
-  "close": "日"
+  "latitude": 35.7077,
+  "longitude": 139.7621,
+  "ratings": 4.2,
+  "urls": "https://www.example.com/izasa",
+  "price_level": "PRICE_LEVEL_INEXPENSIVE",
+  "photo": "https://example.com/photos/izasa.jpg"
 }
 
 --------------------------------
@@ -318,28 +497,22 @@ Chat History :
   {
     "id": "J001274557",
     "name": "御殿",
-    "name_kana": "ごてん",
-    "address": "東京都文京区本郷５-24-2 グレースイマスビル1F",
-    "budget_average": "ランチ700円",
-    "budget_name": "3001～4000円",
-    "catch": "昼はランチ、夜は居酒屋♪ お酒と相性抜群の料理充実",
-    "access": "大江戸線「本郷三丁目駅」徒歩2分丸の内線「本郷三丁目駅」徒歩3分本郷三丁目駅から146m",
-    "mobile_access": "本郷三丁目駅徒歩3分",
-    "open": "月～金: 11:00～14:00 （料理L.O. 13:30 ドリンクL.O. 13:30）17:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:00）土: 17:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:00）",
-    "close": "日、祝日"
+    "latitude": 35.7079,
+    "longitude": 139.7618,
+    "ratings": 4.0,
+    "urls": "https://www.example.com/goten",
+    "price_level": "PRICE_LEVEL_MODERATE",
+    "photo": "https://example.com/photos/goten.jpg"
   },
   {
     "id": "J001293289",
     "name": "つつじ屋",
-    "name_kana": "つつじや",
-    "address": "東京都文京区弥生１-6-4",
-    "budget_average": "",
-    "budget_name": "2001～3000円",
-    "catch": "",
-    "access": "地下鉄南北線東大前駅から徒歩4分",
-    "mobile_access": "地下鉄南北線東大前駅から徒歩4分",
-    "open": "月～木、土: 11:00～19:00 （料理L.O. 18:00 ドリンクL.O. 18:30）祝日: 11:00～17:00 （料理L.O. 16:00 ドリンクL.O. 16:00）",
-    "close": "金、日"
+    "latitude": 35.7156,
+    "longitude": 139.7598,
+    "ratings": 3.8,
+    "urls": "https://www.example.com/tsutsujiya",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/tsutsujiya.jpg"
   }
 ]
 
@@ -368,28 +541,22 @@ Chat History :
  {
     "id": "J001295205",
     "name": "ハミングバードCafe",
-    "name_kana": "ハミングバードカフェ",
-    "address": "東京都文京区根津２-22-6　コートハウス根津1階",
-    "budget_average": "1500円",
-    "budget_name": "1001～1500円",
-    "catch": "",
-    "access": "東京メトロ千代田線根津駅１出口より徒歩約3分",
-    "mobile_access": "東京ﾒﾄﾛ千代田線根津駅1出口より徒歩約3分",
-    "open": "水～日、祝日、祝前日: 11:00～19:00",
-    "close": "月、火"
+    "latitude": 35.7185,
+    "longitude": 139.7628,
+    "ratings": 4.1,
+    "urls": "https://www.example.com/hummingbird",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/hummingbird.jpg"
   },
   {
     "id": "J001280485",
     "name": "ミステリーカフェ 謎屋珈琲店 文京根津店",
-    "name_kana": "みすてりーかふぇなぞやこーひーてんぶんきょうねづてん",
-    "address": "東京都文京区根津１-27-1第2高野ビル1階",
-    "budget_average": "",
-    "budget_name": "1001～1500円",
-    "catch": "",
-    "access": "千駄木駅　徒歩6分",
-    "mobile_access": "千駄木駅 徒歩6分",
-    "open": "月、火、木～土、祝日、祝前日: 07:00～22:00日: 07:00～19:00",
-    "close": "水"
+    "latitude": 35.7192,
+    "longitude": 139.7635,
+    "ratings": 3.9,
+    "urls": "https://www.example.com/mysterycafe",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/mysterycafe.jpg"
   }
 ]
 
@@ -412,29 +579,23 @@ Store 1
  {
     "id": "J001101024",
     "name": "スペインバル カリエンテ",
-    "name_kana": "すぺいんばる　かりえんて",
-    "address": "東京都文京区本郷２－３９－１０",
-    "budget_average": "￥4,000～￥4,999 ",
-    "budget_name": "4001～5000円",
-    "catch": "11月12日（木曜日）7周年 季節メニューのご用意♪",
-    "access": "本郷三丁目から徒歩2分",
-    "mobile_access": "本郷三丁目駅から232m",
-    "open": "月～木、土: 17:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:30）金、祝前日: 17:00～翌2:00 （料理L.O. 翌1:00 ドリンクL.O. 翌1:30）祝日: 17:00～22:00 （料理L.O. 21:00 ドリンクL.O. 21:30）",
-    "close": "日"
+    "latitude": 35.7075,
+    "longitude": 139.7605,
+    "ratings": 4.3,
+    "urls": "https://www.example.com/caliente",
+    "price_level": "PRICE_LEVEL_MODERATE",
+    "photo": "https://example.com/photos/caliente.jpg"
   }
 Store 2
   {
     "id": "J003532879",
     "name": "中国菜 道 dao",
-    "name_kana": "ちゅうごくさいだう",
-    "address": "東京都台東区谷中１-1-31　池之端コーポ2　101",
-    "budget_average": "ディナー：平均2000～7000円",
-    "budget_name": "4001～5000円",
-    "catch": "",
-    "access": "千代田線根津駅徒歩6分/山手線上野駅徒歩15分",
-    "mobile_access": "千代田線根津駅徒歩6分/山手線上野駅徒歩15分",
-    "open": "火～日、祝日、祝前日: 11:30～15:00 （料理L.O. 14:30 ドリンクL.O. 15:00）17:00～21:00 （料理L.O. 20:30 ドリンクL.O. 21:00）",
-    "close": "月、日（第１・第３）"
+    "latitude": 35.7214,
+    "longitude": 139.7668,
+    "ratings": 4.5,
+    "urls": "https://www.example.com/dao",
+    "price_level": "PRICE_LEVEL_MODERATE",
+    "photo": "https://example.com/photos/dao.jpg"
   },
 
 --------------------------------
@@ -446,41 +607,32 @@ Chat History :
   {
     "id": "J003599409",
     "name": "星宿飯店",
-    "name_kana": "せいしゅくはんてん",
-    "address": "東京都文京区湯島２丁目20-6",
-    "budget_average": "",
-    "budget_name": "2001～3000円",
-    "catch": "",
-    "access": "都営大江戸線本郷三丁目駅５出口より徒歩約7分/東京メトロ千代田線湯島駅３出口より徒歩約11分",
-    "mobile_access": "都営大江戸線本郷三丁目駅5出口より徒歩約7分",
-    "open": "月～日、祝日、祝前日: 11:00～15:0017:00～23:00",
-    "close": "なし"
+    "latitude": 35.7072,
+    "longitude": 139.7684,
+    "ratings": 4.0,
+    "urls": "https://www.example.com/seishuku",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/seishuku.jpg"
   },
   {
     "id": "J003624462",
     "name": "福龍 李家菜館",
-    "name_kana": "ふくりゅうりかさいかん",
-    "address": "東京都台東区上野２-11-9オスカービル1F",
-    "budget_average": "",
-    "budget_name": "3001～4000円",
-    "catch": "",
-    "access": "千代田線湯島駅徒歩1分",
-    "mobile_access": "千代田線湯島駅徒歩1分",
-    "open": "月～土、祝日、祝前日: 11:00～14:3016:30～23:30",
-    "close": "日"
+    "latitude": 35.7118,
+    "longitude": 139.7738,
+    "ratings": 4.2,
+    "urls": "https://www.example.com/fukuryu",
+    "price_level": "PRICE_LEVEL_MODERATE",
+    "photo": "https://example.com/photos/fukuryu.jpg"
   },
   {
     "id": "J001234441",
     "name": "香港傳奇 湯島店",
-    "name_kana": "ほんこんでんき　ゆしまてん",
-    "address": "東京都文京区湯島３-34-8 1F",
-    "budget_average": "ランチ：～1000円　ディナー平均：約2500円",
-    "budget_name": "2001～3000円",
-    "catch": "本格的な香港料理 駅近でアクセス良好！",
-    "access": "東京メトロ千代田線湯島駅３出口より徒歩約１分/東京メトロ銀座線上野広小路駅A4出口より徒歩約６分",
-    "mobile_access": "東京ﾒﾄﾛ千代田線湯島駅3出口より徒歩約1分",
-    "open": "月～日、祝日、祝前日: 12:00～21:00 （料理L.O. 20:25 ドリンクL.O. 20:25）",
-    "close": "なし"
+    "latitude": 35.7079,
+    "longitude": 139.7701,
+    "ratings": 3.9,
+    "urls": "https://www.example.com/hongkongdenki",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/hongkongdenki.jpg"
   },
 ]
 
@@ -508,3 +660,5 @@ Latest User Request :
         return prompt_filter
     elif name == "refine":
         return prompt_refine
+    elif name == "extract_places":
+        return prompt_extract_places
