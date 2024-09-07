@@ -275,12 +275,12 @@ Output :
 以下の形式でJSONを出力してください：
 {
 "thoughts": "チャット履歴からなぜそのような抽出条件を設定したかを述べる。",
-"keyword": "検索キーワード。料理のジャンルや、その他ユーザの希望を表すキーワードを指定する。"
+"keyword": "検索キーワード。料理のジャンルや店名、その他ユーザの希望を表すキーワードを指定する。"
 }
 
 注意事項：
-1. あなたが出力するキーワードを元に検索を行うGoogle Places APIのText Search (New)は、飲食店のみを検索の対象となるように設定しているので、キーワードに「レストラン」や「飲食店」といった自明なキーワードは指定しないでください。
-
+1. あなたが出力するキーワードを元に検索を行うGoogle Places APIのText Search (New)は、飲食店のみを検索の対象となるように設定しているので、"keyword"に"レストラン"や"飲食店"といった自明なキーワードは指定しないでください。
+2. "keyword"には、曖昧すぎるワードは使用しないでください。例えば、ユーザが「夏っぽいものを食べたい」と言っていたとしても、"keyword"に"夏"や"夏っぽい"などの言葉は使用せず、"冷やし中華"や"そうめん"などのより具体的な言葉を使用してください
 以下の会話履歴を分析し、上記のJSONを作成してください。回答は厳密にJSON形式で、JSONヘッダーのような余計なテキストは除いてください。
 
 出力は以下の例に従ってください。
@@ -289,41 +289,27 @@ Example1
 
 [Input]
 Chat History :
-[0] User: 新宿周辺で昼食にラーメンを食べたいです。
+[0] User: 昼食にラーメンを食べたいです。
 [1] Bot: [
 {
 "id": "J001039795",
 "name": "IZASA",
-"logo_image": "https://imgfp.hotp.jp/SYS/cmn/images/common/diary/custom/m30_img_noimage.gif",
-"name_kana": "いざさ",
-"address": "東京都文京区本郷５－２５－１７ドミネンス本郷１０２",
-"budget_average": "750円",
-"budget_name": "1501～2000円",
-"catch": "濃厚！！鶏白湯ラーメン！ クーポンで味玉サービス♪",
-"access": "地下鉄丸の内線本郷三丁目駅、都営大江戸線本郷三丁目駅より徒歩3分",
-"mobile_access": "本郷三丁目駅より徒歩3分",
+"latitude": 35.7123,
+"longitude": 139.7456,
+"rating": 4.2,
 "urls": "https://www.hotpepper.jp/strJ001039795/?vos=nhppalsa000016",
-"photo_l": "https://imgfp.hotp.jp/IMGH/05/09/P020100509/P020100509_168.jpg",
-"photo_s": "https://imgfp.hotp.jp/IMGH/05/09/P020100509/P020100509_100.jpg",
-"open": "月～土、祝日、祝前日: 11:00～21:30 （料理L.O. 21:00 ドリンクL.O. 21:00）",
-"close": "日"
+"price_level": 2,
+"photo": "https://imgfp.hotp.jp/IMGH/05/09/P020100509/P020100509_168.jpg"
 },
 {
 "id": "J001264417",
 "name": "中華料理&横浜家系ラーメン 本郷家 ",
-"logo_image": "https://imgfp.hotp.jp/SYS/cmn/images/common/diary/custom/m30_img_noimage.gif",
-"name_kana": "よこはまいえけいらーめんほんごうや",
-"address": "東京都文京区本郷４丁目1－3",
-"budget_average": "",
-"budget_name": "2001～3000円",
-"catch": "本郷三丁目駅徒歩1分 持ち帰りOK！！",
-"access": "都営大江戸線本郷三丁目駅４出口1分/丸ノ内線本郷三丁目駅１出口2分/三田線春日駅、南北線後楽園駅A2出口徒歩13分",
-"mobile_access": "大江戸線本郷三丁目駅1分/丸ﾉ内線本郷三丁目駅2分",
+"latitude": 35.7098,
+"longitude": 139.7601,
+"rating": 3.8,
 "urls": "https://www.hotpepper.jp/strJ001264417/?vos=nhppalsa000016",
-"photo_l": "https://imgfp.hotp.jp/IMGH/47/41/P037424741/P037424741_168.jpg",
-"photo_s": "https://imgfp.hotp.jp/IMGH/47/41/P037424741/P037424741_100.jpg",
-"open": "月～金: 11:00～20:00 （料理L.O. 19:45 ドリンクL.O. 19:45）日: 11:00～15:00 （料理L.O. 14:45 ドリンクL.O. 14:45）",
-"close": "土"
+"price_level": 3,
+"photo": "https://imgfp.hotp.jp/IMGH/47/41/P037424741/P037424741_168.jpg"
 }
 ]
 [2] User: 家系が食べたい気分です。あと個室があるとありがたいのですが条件を満たすお店はある？
@@ -350,53 +336,32 @@ Chat History :
 {
 "id": "J001216679",
 "name": "焼肉 テっちゃん",
-"logo_image": "https://imgfp.hotp.jp/IMGH/83/70/P032328370/P032328370_69.jpg",
-"name_kana": "やきにく　てっちゃん",
-"address": "東京都文京区根津１-1-20 B1F",
-"budget_average": "3001円-4000円",
-"budget_name": "3001～4000円",
-"catch": "単品メニューも豊富です お一人様も大歓迎！",
-"access": "千代田線根津駅2番出口左側すぐ根津駅より53m",
-"mobile_access": "千代田線根津駅2番出口左側すぐ",
+"latitude": 35.7201,
+"longitude": 139.7654,
+"rating": 4.0,
 "urls": "https://www.hotpepper.jp/strJ001216679/?vos=nhppalsa000016",
-"photo_l": "https://imgfp.hotp.jp/IMGH/81/61/P032328161/P032328161_168.jpg",
-"photo_s": "https://imgfp.hotp.jp/IMGH/81/61/P032328161/P032328161_100.jpg",
-"open": "月～金: 11:30～14:0017:00～23:30 （料理L.O. 23:00 ドリンクL.O. 23:00）土、日、祝日、祝前日: 17:00～23:30 （料理L.O. 23:00 ドリンクL.O. 23:00）",
-"close": "不定休"
+"price_level": 3,
+"photo": "https://imgfp.hotp.jp/IMGH/81/61/P032328161/P032328161_168.jpg"
 },
 {
 "id": "J001215058",
 "name": "中華料理居酒屋 食為天",
-"logo_image": "https://imgfp.hotp.jp/IMGH/47/73/P032104773/P032104773_69.jpg",
-"name_kana": "ねづ・やねせん　ちゅうかりょうりいざかや　すーいーてん",
-"address": "東京都文京区根津２-19-4",
-"budget_average": "1000～2000円",
-"budget_name": "1501～2000円",
-"catch": "気軽に本格中華ランチ！ 2～８名OKのテーブル席！",
-"access": "東京メトロ千代田線根津駅より徒歩約1分/東京メトロ千代田線千駄木駅より徒歩10分/東京メトロ南北線東大前駅より徒歩8分",
-"mobile_access": "東京ﾒﾄﾛ千代田線根津駅1出口より徒歩約1分",
+"latitude": 35.7189,
+"longitude": 139.7612,
+"rating": 3.9,
 "urls": "https://www.hotpepper.jp/strJ001215058/?vos=nhppalsa000016",
-"photo_l": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg",
-"photo_s": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_100.jpg",
-"open": "月～日、祝日、祝前日: 11:00～15:00 （料理L.O. 14:45 ドリンクL.O. 14:45）17:00～23:00 （料理L.O. 22:45 ドリンクL.O. 22:45）",
-"close": "特に無し"
+"price_level": 2,
+"photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
 },
 {
 "id": "J001285639",
 "name": "ラーメンバル ゆきかげ",
-"logo_image": "https://imgfp.hotp.jp/IMGH/45/88/P038874588/P038874588_69.jpg",
-"name_kana": "らーめんばる　ゆきかげ",
-"address": "東京都文京区根津２-18-3",
-"budget_average": "ランチは1000円前後/ディナーは2000円～",
-"budget_name": "2001～3000円",
-"catch": "1階はカウンター お昼からハッピーアワー★",
-"access": "東京メトロ千代田線「根津」駅/出口1より徒歩1分",
-"mobile_access": "東京ﾒﾄﾛ千代田線｢根津｣駅/出口1より徒歩1分",
+"latitude": 35.7176,
+"longitude": 139.7598,
+"rating": 4.1,
 "urls": "https://www.hotpepper.jp/strJ001285639/?vos=nhppalsa000016",
-"photo_l": "https://imgfp.hotp.jp/IMGH/81/47/P040238147/P040238147_168.jpg",
-"photo_s": "https://imgfp.hotp.jp/IMGH/81/47/P040238147/P040238147_100.jpg",
-"open": "月、金: 17:00～21:00 （料理L.O. 21:00 ドリンクL.O. 21:00）火: 11:00～14:00 （料理L.O. 14:00 ドリンクL.O. 14:00）17:00～21:00 （料理L.O. 21:00 ドリンクL.O. 21:00）水: 11:00～14:00 （料理L.O. 13:30 ドリンクL.O. 13:30）17:00～21:00 （料理L.O. 21:00 ドリンクL.O. 21:00）土、日、祝日: 11:00～21:00 （料理L.O. 21:00 ドリンクL.O. 21:00）",
-"close": "木"
+"price_level": 2,
+"photo": "https://imgfp.hotp.jp/IMGH/81/47/P040238147/P040238147_168.jpg"
 }
 ]
 
@@ -415,22 +380,41 @@ Example3
 [Input]
 Chat History :
 [0] User : 
-夜景が綺麗なお店でイタリアンを食べられるレストランに行きたいです。
-[1] Bot :
-[]
-[2] User:
-そもそもこの付近に夜景が綺麗なイタリアンってあるの？
-[3] Bot :
-[]
+何か重たくない系の食べ物が食べたいな。
+[1] Bot : 
+[
+{
+"id": "J001280485",
+"name": "粥や　佐藤",
+"latitude": 35.7189,
+"longitude": 139.6612,
+"rating": 3.9,
+"urls": "https://www.hotpepper.jp/strJ001280485/?vos=nhppalsa000016",
+"price_level": 2,
+"photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
+},
+{
+"id": "J001280485",
+"name": "たない粥",
+"latitude": 35.7189,
+"longitude": 139.7612,
+"rating": 4.1,
+"urls": "https://www.hotpepper.jp/strJ001280485/?vos=nhppalsa000016",
+"price_level": 2,
+"photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
+}
+]
+
+
 
 --------------------------------
 Latest User Request :
-ないのかー。じゃあイタリアンはある？
+他におすすめない？
 
 [Output] 
 {
-"thoughts": "ユーザは初め夜景が綺麗なイタリアンを食べたいと思っていたが、最終的にはイタリアンのみを指定している。そのため、「イタリアン」を指定する。",
-"keyword": "イタリアン"
+"thoughts": "ユーザは「重たくない」という抽象度の高い希望を持っている。「重たくない」とは、消化に良く、胃にもたれにくい食材や料理を指すことが多い。会話履歴を見ると、botは「粥」というキーワードで前回推薦をしたようだが、ユーザは気に入っていないようだ。そこで、今回は消化によく、胃にもたれにくい「うどん」を指定することにする。",
+"keyword": "うどん"
 }
 
 Example4
@@ -439,11 +423,11 @@ Chat History :
 
 --------------------------------
 Latest User Request :
-1000円くらいで適当に昼飯を済ませたいんだけどおすすめのレストランはある？
+二日酔いに良い食べ物が食べたいです。
 Output :
 {
-"thoughts": "ユーザは1000円で昼食を済ませたいと思っている。そこで「ランチ　お手頃」を指定する。",
-"keyword": "ランチ　お手頃"
+"thoughts": "「二日酔いに良い」というのも抽象度が高い。「二日酔いに良い」というのは、二日酔いによる脱水や栄養不足を補い、消化に優しく胃腸に負担をかけにくいものだと考えられるので、そのような料理が何か考えると、定食や粥などが思い浮かぶ。そこで、「粥」を指定する。",
+"keyword": "粥"
 }
 
 Example5
