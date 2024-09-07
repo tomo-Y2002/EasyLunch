@@ -14,29 +14,45 @@ from src.db.access.chat import ChatDB
 from src.db.access.visit import VisitDB
 from src.llm.llm_call import LLM
 from src.llm.prompt import select_prompt
-from src.llm.utils import build_user_prompt_refine
+from src.llm.utils import build_user_prompt_refine, build_user_prompt_extract
 from src.api.hot_pepper import HotPepperClient
 
-
-with open("config.yaml", encoding="utf-8") as f:
-    configs = yaml.safe_load(f)
+if os.path.exists("config.yaml"):
+    with open("config.yaml", encoding="utf-8") as f:
+        config_data = yaml.safe_load(f)
+        for key, value in config_data.items():
+            os.environ[key] = str(value)
 
 app = Flask(__name__)
-line_bot_handler = LineMessagingClient()
+line_bot_handler = LineMessagingClient(
+    line_channel_secret=os.environ.get("LINE_CHANNEL_SECRET"),
+    line_channel_access_token=os.environ.get("LINE_CHANNEL_ACCESS_TOKEN"),
+    port=os.environ.get("PORT"),
+)
 chat_db = ChatDB(
-    host=configs["MYSQL_HOST"],
-    user=configs["MYSQL_USER"],
-    password=configs["MYSQL_PASSWORD"],
-    database=configs["MYSQL_DATABASE"],
+    host=os.environ.get("MYSQL_HOST"),
+    user=os.environ.get("MYSQL_USER"),
+    password=os.environ.get("MYSQL_PASSWORD"),
+    database=os.environ.get("MYSQL_DATABASE"),
 )
 visit_db = VisitDB(
-    host=configs["MYSQL_HOST"],
-    user=configs["MYSQL_USER"],
-    password=configs["MYSQL_PASSWORD"],
-    database=configs["MYSQL_DATABASE"],
+    host=os.environ.get("MYSQL_HOST"),
+    user=os.environ.get("MYSQL_USER"),
+    password=os.environ.get("MYSQL_PASSWORD"),
+    database=os.environ.get("MYSQL_DATABASE"),
 )
-llm_client = LLM(llm_type="claude 3.5 sonnet")
-hotpepper_client = HotPepperClient()
+llm_client = LLM(
+    llm_type="claude 3.5 sonnet",
+    aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+    region_name=os.environ.get("AWS_REGION"),
+)
+hotpepper_client = HotPepperClient(
+    hot_pepper_api_key=os.environ.get("HOT_PEPPER_API_KEY"),
+    hot_pepper_lat=os.environ.get("HOT_PEPPER_LAT"),
+    hot_pepper_lng=os.environ.get("HOT_PEPPER_LNG"),
+    hot_pepper_range=os.environ.get("HOT_PEPPER_RANGE"),
+)
 
 
 @line_bot_handler.handler.add(PostbackEvent)
@@ -74,27 +90,31 @@ def on_reply(event):
     conn = chat_db.connect()
     chat_history = chat_db.get(conn=conn, user_id=user_id)
     chat_db.close(conn)
-    print(f"会話履歴の取得完了")
+    print("会話履歴の取得完了")
 
     # 来店履歴DBから、該当のuser_idの来店履歴を取得
     conn = visit_db.connect()
     visit_history = visit_db.get(conn=conn, user_id=user_id)
     visit_db.close(conn)
-    print(f"来店履歴の取得完了")
+    print("来店履歴の取得完了")
 
-    # ユーザの要望から、ホットペッパーAPIに入れるための情報抽出
+    prompt_extract_user = build_user_prompt_extract(
+        request=text,
+        chat=chat_history,
+    )
+    # print(f"prompt_extract_user: {prompt_extract_user}")
     prompt_extract = llm_client._build_prompt(
         prompt_system=select_prompt("extract"),
         image_encoded="",
-        prompt_user=text,  # to be updated
+        prompt_user=prompt_extract_user,
     )
     condition = llm_client.call_retry(mode="extract", prompt=prompt_extract)
-    print(f"情報抽出完了")
+    print("情報抽出完了")
 
     # ホットペッパーAPIで飲食店検索
     condition = json.loads(condition)
     stores = hotpepper_client.search_essential(condition, count=15)
-    print(f"ホットペッパーでの検索完了")
+    print("ホットペッパーでの検索完了")
 
     # 来店履歴から、ユーザに沿ったものがあればLLMで抽出して返す
     stores_visited = []
@@ -103,7 +123,7 @@ def on_reply(event):
         if len(res) != 0:
             stores_visited.append(res[0])
     stores_visited = stores_visited[:10]  # 10件までに制限
-    print(f"来店履歴の検索完了")
+    print("来店履歴の検索完了")
     prompt_refine_user = build_user_prompt_refine(
         request=text,
         chat=chat_history,
@@ -121,16 +141,16 @@ def on_reply(event):
         stores[-1] = hotpepper_client.search_essential({"id": id_selected}, count=1)[
             0
         ]  # 置換作業
-    print(f"来店履歴からの情報追加完了")
+    print("来店履歴からの情報追加完了")
 
     # storesをFlex Messageに変換して、ユーザに返す
     if len(stores) == 0:
         line_bot_handler.send_text(user_id, "条件に合うお店が見つかりませんでした 😢")
-        print(f"条件に合うお店が見つからなかったメッセージを送信")
+        print("条件に合うお店が見つからなかったメッセージを送信")
     else:
         flex_message = create_carousel(user_id, stores=stores, num=5)
         line_bot_handler.send_flex(flex_message)
-        print(f"Flex Messageの送信完了")
+        print("Flex Messageの送信完了")
 
     # 会話履歴DBにユーザとBOTの返答を追加
     conn = chat_db.connect()
@@ -148,7 +168,7 @@ def on_reply(event):
     )
     chat_db.commit(conn)
     chat_db.close(conn)
-    print(f"会話履歴の更新完了")
+    print("会話履歴の更新完了")
 
 
 @app.route("/callback", methods=["POST"])
