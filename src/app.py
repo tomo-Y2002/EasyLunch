@@ -24,18 +24,30 @@ if os.path.exists("config.yaml"):
         for key, value in config_data.items():
             os.environ[key] = str(value)
 
+logging_client = Client()
+logger = logging_client.logger("easylunch")
+
 app = Flask(__name__)
 line_bot_handler = LineMessagingClient(
     line_channel_secret=os.environ.get("LINE_CHANNEL_SECRET"),
     line_channel_access_token=os.environ.get("LINE_CHANNEL_ACCESS_TOKEN"),
     port=os.environ.get("PORT"),
 )
+logger.log_text(f"LINE_CHANNEL_SECRET: {os.environ.get('LINE_CHANNEL_SECRET')}")
+logger.log_text(
+    f"LINE_CHANNEL_ACCESS_TOKEN: {os.environ.get('LINE_CHANNEL_ACCESS_TOKEN')}"
+)
+logger.log_text(f"PORT: {os.environ.get('PORT')}")
 chat_db = ChatDB(
     host=os.environ.get("MYSQL_HOST"),
     user=os.environ.get("MYSQL_USER"),
     password=os.environ.get("MYSQL_PASSWORD"),
     database=os.environ.get("MYSQL_DATABASE"),
 )
+logger.log_text(f"MYSQL_HOST: {os.environ.get('MYSQL_HOST')}")
+logger.log_text(f"MYSQL_USER: {os.environ.get('MYSQL_USER')}")
+logger.log_text(f"MYSQL_PASSWORD: {os.environ.get('MYSQL_PASSWORD')}")
+logger.log_text(f"MYSQL_DATABASE: {os.environ.get('MYSQL_DATABASE')}")
 visit_db = VisitDB(
     host=os.environ.get("MYSQL_HOST"),
     user=os.environ.get("MYSQL_USER"),
@@ -51,14 +63,23 @@ llm_client = LLM(
     azure_endpoint=os.environ.get("AZURE_ENDPOINT"),
     azure_api_version=os.environ.get("AZURE_API_VERSION"),
 )
+logger.log_text(f"LLM_TYPE: {os.environ.get('LLM_TYPE')}")
+logger.log_text(f"AWS_ACCESS_KEY_ID: {os.environ.get('AWS_ACCESS_KEY_ID')}")
+logger.log_text(f"AWS_SECRET_ACCESS_KEY: {os.environ.get('AWS_SECRET_ACCESS_KEY')}")
+logger.log_text(f"AWS_REGION: {os.environ.get('AWS_REGION')}")
+logger.log_text(f"AZURE_API_KEY: {os.environ.get('AZURE_API_KEY')}")
+logger.log_text(f"AZURE_ENDPOINT: {os.environ.get('AZURE_ENDPOINT')}")
+logger.log_text(f"AZURE_API_VERSION: {os.environ.get('AZURE_API_VERSION')}")
 hotpepper_client = HotPepperClient(
     hot_pepper_api_key=os.environ.get("HOT_PEPPER_API_KEY"),
     hot_pepper_lat=os.environ.get("HOT_PEPPER_LAT"),
     hot_pepper_lng=os.environ.get("HOT_PEPPER_LNG"),
     hot_pepper_range=os.environ.get("HOT_PEPPER_RANGE"),
 )
-logging_client = Client()
-logger = logging_client.logger("easylunch")
+logger.log_text(f"HOT_PEPPER_API_KEY: {os.environ.get('HOT_PEPPER_API_KEY')}")
+logger.log_text(f"HOT_PEPPER_LAT: {os.environ.get('HOT_PEPPER_LAT')}")
+logger.log_text(f"HOT_PEPPER_LNG: {os.environ.get('HOT_PEPPER_LNG')}")
+logger.log_text(f"HOT_PEPPER_RANGE: {os.environ.get('HOT_PEPPER_RANGE')}")
 
 
 @line_bot_handler.handler.add(PostbackEvent)

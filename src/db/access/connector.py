@@ -15,6 +15,12 @@ class MySQLConnector:
         self.user = user
         self.password = password
         self.database = database
+        logger.log_text(
+            f"host: {host}, user: {user}, database: {database}, password: {password}"
+        )
+        logger.log_text(
+            f"type(host): {type(host)}, type(user): {type(user)}, type(database): {type(database)}, type(password): {type(password)}"
+        )
 
     def connect(self):
         """
