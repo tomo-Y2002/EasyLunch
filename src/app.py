@@ -44,11 +44,13 @@ chat_db = ChatDB(
     user=os.environ.get("MYSQL_USER"),
     password=os.environ.get("MYSQL_PASSWORD"),
     database=os.environ.get("MYSQL_DATABASE"),
+    is_gc=bool(os.environ.get("IS_GOOGLE_CLOUD")),
 )
 logger.log_text(f"MYSQL_HOST: {os.environ.get('MYSQL_HOST')}")
 logger.log_text(f"MYSQL_USER: {os.environ.get('MYSQL_USER')}")
 logger.log_text(f"MYSQL_PASSWORD: {os.environ.get('MYSQL_PASSWORD')}")
 logger.log_text(f"MYSQL_DATABASE: {os.environ.get('MYSQL_DATABASE')}")
+logger.log_text(f"IS_GOOGLE_CLOUD: {os.environ.get('IS_GOOGLE_CLOUD')}")
 visit_db = VisitDB(
     host=os.environ.get("MYSQL_HOST"),
     user=os.environ.get("MYSQL_USER"),

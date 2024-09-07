@@ -10,11 +10,12 @@ class MySQLConnector:
     MySQL のサーバに接続するクラス
     """
 
-    def __init__(self, host, user, password, database):
+    def __init__(self, host, user, password, database, is_gc=False):
         self.host = host
         self.user = user
         self.password = password
         self.database = database
+        self.is_gc = is_gc
         self.port = 3306
         logger.log_text(
             f"host: {host}, user: {user}, database: {database}, password: {password}"
@@ -28,13 +29,24 @@ class MySQLConnector:
         データベースへの接続を行う
         """
         try:
-            conn = mysql.connector.connect(
-                host=self.host,
-                user=self.user,
-                password=self.password,
-                database=self.database,
-                port=self.port,
+            logger.log_text("Connecting to MySQL Platform")
+            logger.log_text(
+                f"host: {self.host}, user: {self.user}, database: {self.database}, password: {self.password}, port: {self.port}"
             )
+            if self.is_gc:
+                conn = mysql.connector.connect(
+                    unix_socket=self.host,
+                    user=self.user,
+                    password=self.password,
+                    database=self.database,
+                )
+            else:
+                conn = mysql.connector.connect(
+                    host=self.host,
+                    user=self.user,
+                    password=self.password,
+                    database=self.database,
+                )
             return conn
         except mysql.connector.Error as e:
             print(f"Error connecting to MySQL Platform: {e}")
