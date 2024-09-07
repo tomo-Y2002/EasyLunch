@@ -1,70 +1,34 @@
 {
-  "html_attributions": [],
-  "result": {
-    "name": "Starbucks Coffee - Tokyo Dome City Meets Port",
-    "rating": 3.7,
-    "reviews": [
-      {
-        "author_name": "CuppyRider",
-        "author_url": "https://www.google.com/maps/contrib/106409935313197984672/reviews",
-        "language": "en",
-        "original_language": "en",
-        "profile_photo_url": "https://lh3.googleusercontent.com/a-/ALV-UjU8bCEnZracI5L-pxfOSj-tW036MehvegeX6Sa5d3gJHeRgTjHp=s128-c0x00000000-cc-rp-mo-ba5",
-        "rating": 3,
-        "relative_time_description": "3 months ago",
-        "text": "Stable Starbuck menu and experience.\n\nTable outside and small area inside compared to other inner-city shops.\n\nFirst time using order-from-app. It said ready in 5 to 10 minutes but I received a notification about 2 minutes after ordering that my order was ready.\n\nA very busy shop so recommend ordering via app when possible.",
-        "time": 1716994929,
-        "translated": false
-      },
-      {
-        "author_name": "Ando Lee",
-        "author_url": "https://www.google.com/maps/contrib/114347498383003370383/reviews",
-        "language": "en",
-        "original_language": "en",
-        "profile_photo_url": "https://lh3.googleusercontent.com/a/ACg8ocKGDAF03shg_jDlip_3Jfmp9MFUbg4H-YQJcNcHdSbnthXZdlAK=s128-c0x00000000-cc-rp-mo-ba4",
-        "rating": 5,
-        "relative_time_description": "3 months ago",
-        "text": "I am not the type to leave reviews for Starbucks, but I am writing one because I had a special experience here. Sitting outside and feeling the sunshine, you can watch busy Tokyo citizens walking by, making it a perfect spot to relax. The staff can communicate in basic English and are very eager to help, making the ordering process very easy.",
-        "time": 1717817618,
-        "translated": false
-      },
-      {
-        "author_name": "Harold Archer",
-        "author_url": "https://www.google.com/maps/contrib/106223954381343780002/reviews",
-        "language": "en",
-        "original_language": "en",
-        "profile_photo_url": "https://lh3.googleusercontent.com/a-/ALV-UjWSO8MgL3CdUB8YDckHqNsUemmuqd4RUtIR0hBSuvnNK8HXXVT3=s128-c0x00000000-cc-rp-mo-ba6",
-        "rating": 4,
-        "relative_time_description": "3 years ago",
-        "text": "Nice seating area outside, friendly staff, good standard Japan Starbucks special drinks “chocolate on the chocolate” on now.  COVID hand wash, must ask to put cream in the coffee, can’t do it yourself, some social distancing.",
-        "time": 1612579419,
-        "translated": false
-      },
-      {
-        "author_name": "Yusuf CANDAN",
-        "author_url": "https://www.google.com/maps/contrib/100650154875098725331/reviews",
-        "language": "en",
-        "original_language": "en",
-        "profile_photo_url": "https://lh3.googleusercontent.com/a-/ALV-UjWV6AvDnsOOyDa4xKqKPOtDflZ_7Co_vswH8J4Z5q9CASv7yaMD=s128-c0x00000000-cc-rp-mo-ba3",
-        "rating": 5,
-        "relative_time_description": "a year ago",
-        "text": "The best Starbucks in Tokyo.  Employees are very friendly.  I think the best desserts are here.",
-        "time": 1683880454,
-        "translated": false
-      },
-      {
-        "author_name": "j2 5",
-        "author_url": "https://www.google.com/maps/contrib/118089076497767886625/reviews",
-        "language": "en",
-        "original_language": "en",
-        "profile_photo_url": "https://lh3.googleusercontent.com/a/ACg8ocLh3CToEOvBwqj_DAinniEqYjhSJrSyGPR-J0AMs0RZxuTLrQ=s128-c0x00000000-cc-rp-mo-ba6",
-        "rating": 4,
-        "relative_time_description": "a year ago",
-        "text": "For someone new to this place, it was not easy to locate when you walked out from the dome,  while thinking of having a cup of Starbucks coffee before heading home. It was not crowded and seats were available.\nThe train station was just a few steps away , so it was very convenient.",
-        "time": 1676028873,
-        "translated": false
+  "places": [
+    {
+      "displayName": {
+        "text": "博多豚骨らぁ麺 一絆 上野御徒町本店",
+        "languageCode": "ja"
       }
-    ]
-  },
-  "status": "OK"
+    },
+    {
+      "displayName": {
+        "text": "ひらさわ",
+        "languageCode": "ja"
+      }
+    },
+    {
+      "displayName": {
+        "text": "とんこつラーメン 博多風龍 上野店",
+        "languageCode": "ja"
+      }
+    },
+    {
+      "displayName": {
+        "text": "長浜や 上野店",
+        "languageCode": "ja"
+      }
+    },
+    {
+      "displayName": {
+        "text": "とんこつラーメン 博多風龍 秋葉原総本店",
+        "languageCode": "ja"
+      }
+    }
+  ]
 }
