@@ -94,7 +94,7 @@ def check_parse_extract_places(data: dict):
     情報抽出に関するllmのjson出力が正しいのかをチェックする
     """
     try:
-        if "thought" in data and "keyword" in data:
+        if "thoughts" in data and "keyword" in data:
             return True
         else:
             return False

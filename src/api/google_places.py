@@ -61,7 +61,7 @@ class GooglePlacesClient:
                         'latitude': 35.71452370573787,
                         'longitude': 139.76181006885508,
                         'rating': 4.5,
-                        'Urls': 'google mapのURL',
+                        'urls': 'google mapのURL',
                         'priceLevel': 2,
                         'photo': '写真のURL'
                     },
@@ -129,7 +129,7 @@ class GooglePlacesClient:
                         'latitude': 35.71452370573787,
                         'longitude': 139.76181006885508,
                         'rating': 4.5,
-                        'Urls': 'google mapのURL',
+                        'urls': 'google mapのURL',
                         'priceLevel': 2,
                         'photo': '写真のURL'
                     }
@@ -183,16 +183,16 @@ class GooglePlacesClient:
             result["name"] = store["displayName"]["text"]
         if "location" in store:
             result["latitude"] = store["location"]["latitude"]
-        if "longitude" in store:
+        if "location" in store:
             result["longitude"] = store["location"]["longitude"]
         if "rating" in store:
             result["rating"] = store["rating"]
         if "googleMapsUri" in store:
-            result["Urls"] = store["googleMapsUri"]
+            result["urls"] = store["googleMapsUri"]
         if "priceLevel" in store:
             result["priceLevel"] = store["priceLevel"]
         if "photos" in store:
-            result["photo"] = self.photo_url(store["photos"][0]["name"])
+            result["photo"] = self.photo_url(store["photos"][1]["name"])
         return result
 
     # 結果の店名を表示
