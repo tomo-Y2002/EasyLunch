@@ -298,7 +298,7 @@ Chat History :
 "longitude": 139.7456,
 "rating": 4.2,
 "urls": "https://www.hotpepper.jp/strJ001039795/?vos=nhppalsa000016",
-"price_level": 2,
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
 "photo": "https://imgfp.hotp.jp/IMGH/05/09/P020100509/P020100509_168.jpg"
 },
 {
@@ -308,7 +308,7 @@ Chat History :
 "longitude": 139.7601,
 "rating": 3.8,
 "urls": "https://www.hotpepper.jp/strJ001264417/?vos=nhppalsa000016",
-"price_level": 3,
+"price_level": "PRICE_LEVEL_MODERATE",
 "photo": "https://imgfp.hotp.jp/IMGH/47/41/P037424741/P037424741_168.jpg"
 }
 ]
@@ -340,7 +340,7 @@ Chat History :
 "longitude": 139.7654,
 "rating": 4.0,
 "urls": "https://www.hotpepper.jp/strJ001216679/?vos=nhppalsa000016",
-"price_level": 3,
+"price_level": "PRICE_LEVEL_MODERATE",
 "photo": "https://imgfp.hotp.jp/IMGH/81/61/P032328161/P032328161_168.jpg"
 },
 {
@@ -350,7 +350,7 @@ Chat History :
 "longitude": 139.7612,
 "rating": 3.9,
 "urls": "https://www.hotpepper.jp/strJ001215058/?vos=nhppalsa000016",
-"price_level": 2,
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
 "photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
 },
 {
@@ -360,7 +360,7 @@ Chat History :
 "longitude": 139.7598,
 "rating": 4.1,
 "urls": "https://www.hotpepper.jp/strJ001285639/?vos=nhppalsa000016",
-"price_level": 2,
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
 "photo": "https://imgfp.hotp.jp/IMGH/81/47/P040238147/P040238147_168.jpg"
 }
 ]
@@ -390,7 +390,7 @@ Chat History :
 "longitude": 139.6612,
 "rating": 3.9,
 "urls": "https://www.hotpepper.jp/strJ001280485/?vos=nhppalsa000016",
-"price_level": 2,
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
 "photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
 },
 {
@@ -400,7 +400,7 @@ Chat History :
 "longitude": 139.7612,
 "rating": 4.1,
 "urls": "https://www.hotpepper.jp/strJ001280485/?vos=nhppalsa000016",
-"price_level": 2,
+"price_level": "PRICE_LEVEL_INEXPENSIVE",
 "photo": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg"
 }
 ]
@@ -480,15 +480,12 @@ Store 1
  {
   "id": "J001039795",
   "name": "IZASA",
-  "name_kana": "いざさ",
-  "address": "東京都文京区本郷５－２５－１７ドミネンス本郷１０２",
-  "budget_average": "750円",
-  "budget_name": "1501～2000円",
-  "catch": "濃厚！！鶏白湯ラーメン！ クーポンで味玉サービス♪",
-  "access": "地下鉄丸の内線本郷三丁目駅、都営大江戸線本郷三丁目駅より徒歩3分",
-  "mobile_access": "本郷三丁目駅より徒歩3分",
-  "open": "月～土、祝日、祝前日: 11:00～21:30 （料理L.O. 21:00 ドリンクL.O. 21:00）",
-  "close": "日"
+  "latitude": 35.7077,
+  "longitude": 139.7621,
+  "ratings": 4.2,
+  "urls": "https://www.example.com/izasa",
+  "price_level": "PRICE_LEVEL_INEXPENSIVE",
+  "photo": "https://example.com/photos/izasa.jpg"
 }
 
 --------------------------------
@@ -500,28 +497,22 @@ Chat History :
   {
     "id": "J001274557",
     "name": "御殿",
-    "name_kana": "ごてん",
-    "address": "東京都文京区本郷５-24-2 グレースイマスビル1F",
-    "budget_average": "ランチ700円",
-    "budget_name": "3001～4000円",
-    "catch": "昼はランチ、夜は居酒屋♪ お酒と相性抜群の料理充実",
-    "access": "大江戸線「本郷三丁目駅」徒歩2分丸の内線「本郷三丁目駅」徒歩3分本郷三丁目駅から146m",
-    "mobile_access": "本郷三丁目駅徒歩3分",
-    "open": "月～金: 11:00～14:00 （料理L.O. 13:30 ドリンクL.O. 13:30）17:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:00）土: 17:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:00）",
-    "close": "日、祝日"
+    "latitude": 35.7079,
+    "longitude": 139.7618,
+    "ratings": 4.0,
+    "urls": "https://www.example.com/goten",
+    "price_level": "PRICE_LEVEL_MODERATE",
+    "photo": "https://example.com/photos/goten.jpg"
   },
   {
     "id": "J001293289",
     "name": "つつじ屋",
-    "name_kana": "つつじや",
-    "address": "東京都文京区弥生１-6-4",
-    "budget_average": "",
-    "budget_name": "2001～3000円",
-    "catch": "",
-    "access": "地下鉄南北線東大前駅から徒歩4分",
-    "mobile_access": "地下鉄南北線東大前駅から徒歩4分",
-    "open": "月～木、土: 11:00～19:00 （料理L.O. 18:00 ドリンクL.O. 18:30）祝日: 11:00～17:00 （料理L.O. 16:00 ドリンクL.O. 16:00）",
-    "close": "金、日"
+    "latitude": 35.7156,
+    "longitude": 139.7598,
+    "ratings": 3.8,
+    "urls": "https://www.example.com/tsutsujiya",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/tsutsujiya.jpg"
   }
 ]
 
@@ -550,28 +541,22 @@ Chat History :
  {
     "id": "J001295205",
     "name": "ハミングバードCafe",
-    "name_kana": "ハミングバードカフェ",
-    "address": "東京都文京区根津２-22-6　コートハウス根津1階",
-    "budget_average": "1500円",
-    "budget_name": "1001～1500円",
-    "catch": "",
-    "access": "東京メトロ千代田線根津駅１出口より徒歩約3分",
-    "mobile_access": "東京ﾒﾄﾛ千代田線根津駅1出口より徒歩約3分",
-    "open": "水～日、祝日、祝前日: 11:00～19:00",
-    "close": "月、火"
+    "latitude": 35.7185,
+    "longitude": 139.7628,
+    "ratings": 4.1,
+    "urls": "https://www.example.com/hummingbird",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/hummingbird.jpg"
   },
   {
     "id": "J001280485",
     "name": "ミステリーカフェ 謎屋珈琲店 文京根津店",
-    "name_kana": "みすてりーかふぇなぞやこーひーてんぶんきょうねづてん",
-    "address": "東京都文京区根津１-27-1第2高野ビル1階",
-    "budget_average": "",
-    "budget_name": "1001～1500円",
-    "catch": "",
-    "access": "千駄木駅　徒歩6分",
-    "mobile_access": "千駄木駅 徒歩6分",
-    "open": "月、火、木～土、祝日、祝前日: 07:00～22:00日: 07:00～19:00",
-    "close": "水"
+    "latitude": 35.7192,
+    "longitude": 139.7635,
+    "ratings": 3.9,
+    "urls": "https://www.example.com/mysterycafe",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/mysterycafe.jpg"
   }
 ]
 
@@ -594,29 +579,23 @@ Store 1
  {
     "id": "J001101024",
     "name": "スペインバル カリエンテ",
-    "name_kana": "すぺいんばる　かりえんて",
-    "address": "東京都文京区本郷２－３９－１０",
-    "budget_average": "￥4,000～￥4,999 ",
-    "budget_name": "4001～5000円",
-    "catch": "11月12日（木曜日）7周年 季節メニューのご用意♪",
-    "access": "本郷三丁目から徒歩2分",
-    "mobile_access": "本郷三丁目駅から232m",
-    "open": "月～木、土: 17:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:30）金、祝前日: 17:00～翌2:00 （料理L.O. 翌1:00 ドリンクL.O. 翌1:30）祝日: 17:00～22:00 （料理L.O. 21:00 ドリンクL.O. 21:30）",
-    "close": "日"
+    "latitude": 35.7075,
+    "longitude": 139.7605,
+    "ratings": 4.3,
+    "urls": "https://www.example.com/caliente",
+    "price_level": "PRICE_LEVEL_MODERATE",
+    "photo": "https://example.com/photos/caliente.jpg"
   }
 Store 2
   {
     "id": "J003532879",
     "name": "中国菜 道 dao",
-    "name_kana": "ちゅうごくさいだう",
-    "address": "東京都台東区谷中１-1-31　池之端コーポ2　101",
-    "budget_average": "ディナー：平均2000～7000円",
-    "budget_name": "4001～5000円",
-    "catch": "",
-    "access": "千代田線根津駅徒歩6分/山手線上野駅徒歩15分",
-    "mobile_access": "千代田線根津駅徒歩6分/山手線上野駅徒歩15分",
-    "open": "火～日、祝日、祝前日: 11:30～15:00 （料理L.O. 14:30 ドリンクL.O. 15:00）17:00～21:00 （料理L.O. 20:30 ドリンクL.O. 21:00）",
-    "close": "月、日（第１・第３）"
+    "latitude": 35.7214,
+    "longitude": 139.7668,
+    "ratings": 4.5,
+    "urls": "https://www.example.com/dao",
+    "price_level": "PRICE_LEVEL_MODERATE",
+    "photo": "https://example.com/photos/dao.jpg"
   },
 
 --------------------------------
@@ -628,41 +607,32 @@ Chat History :
   {
     "id": "J003599409",
     "name": "星宿飯店",
-    "name_kana": "せいしゅくはんてん",
-    "address": "東京都文京区湯島２丁目20-6",
-    "budget_average": "",
-    "budget_name": "2001～3000円",
-    "catch": "",
-    "access": "都営大江戸線本郷三丁目駅５出口より徒歩約7分/東京メトロ千代田線湯島駅３出口より徒歩約11分",
-    "mobile_access": "都営大江戸線本郷三丁目駅5出口より徒歩約7分",
-    "open": "月～日、祝日、祝前日: 11:00～15:0017:00～23:00",
-    "close": "なし"
+    "latitude": 35.7072,
+    "longitude": 139.7684,
+    "ratings": 4.0,
+    "urls": "https://www.example.com/seishuku",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/seishuku.jpg"
   },
   {
     "id": "J003624462",
     "name": "福龍 李家菜館",
-    "name_kana": "ふくりゅうりかさいかん",
-    "address": "東京都台東区上野２-11-9オスカービル1F",
-    "budget_average": "",
-    "budget_name": "3001～4000円",
-    "catch": "",
-    "access": "千代田線湯島駅徒歩1分",
-    "mobile_access": "千代田線湯島駅徒歩1分",
-    "open": "月～土、祝日、祝前日: 11:00～14:3016:30～23:30",
-    "close": "日"
+    "latitude": 35.7118,
+    "longitude": 139.7738,
+    "ratings": 4.2,
+    "urls": "https://www.example.com/fukuryu",
+    "price_level": "PRICE_LEVEL_MODERATE",
+    "photo": "https://example.com/photos/fukuryu.jpg"
   },
   {
     "id": "J001234441",
     "name": "香港傳奇 湯島店",
-    "name_kana": "ほんこんでんき　ゆしまてん",
-    "address": "東京都文京区湯島３-34-8 1F",
-    "budget_average": "ランチ：～1000円　ディナー平均：約2500円",
-    "budget_name": "2001～3000円",
-    "catch": "本格的な香港料理 駅近でアクセス良好！",
-    "access": "東京メトロ千代田線湯島駅３出口より徒歩約１分/東京メトロ銀座線上野広小路駅A4出口より徒歩約６分",
-    "mobile_access": "東京ﾒﾄﾛ千代田線湯島駅3出口より徒歩約1分",
-    "open": "月～日、祝日、祝前日: 12:00～21:00 （料理L.O. 20:25 ドリンクL.O. 20:25）",
-    "close": "なし"
+    "latitude": 35.7079,
+    "longitude": 139.7701,
+    "ratings": 3.9,
+    "urls": "https://www.example.com/hongkongdenki",
+    "price_level": "PRICE_LEVEL_INEXPENSIVE",
+    "photo": "https://example.com/photos/hongkongdenki.jpg"
   },
 ]
 
