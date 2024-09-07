@@ -1,4 +1,8 @@
 import mysql.connector
+from google.cloud.logging import Client
+
+logging_client = Client()
+logger = logging_client.logger("easylunch")
 
 
 class MySQLConnector:
@@ -16,34 +20,53 @@ class MySQLConnector:
         """
         データベースへの接続を行う
         """
-        return mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            password=self.password,
-            database=self.database,
-        )
+        try:
+            conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database,
+            )
+            return conn
+        except mysql.connector.Error as e:
+            print(f"Error connecting to MySQL Platform: {e}")
+            logger.log_text(f"Error connecting to MySQL Platform: {e}")
+            return None
 
     def close(self, conn):
         """
         データベースへの接続を閉じる
         """
-        conn.close()
+        try:
+            conn.close()
+        except mysql.connector.Error as e:
+            print(f"Error closing MySQL connection: {e}")
+            logger.log_text(f"Error closing MySQL connection: {e}")
 
     def commit(self, conn):
         """
         トランザクションをコミットする
         """
-        conn.commit()
+        try:
+            conn.commit()
+        except mysql.connector.Error as e:
+            print(f"Error committing transaction: {e}")
+            logger.log_text(f"Error committing transaction: {e}")
 
     def execute(self, conn, query):
         """
         クエリを実行する
         """
-        cursor = conn.cursor()
-        cursor.execute(query)
-        result = cursor.fetchall()
-        cursor.close()
-        return result
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            result = cursor.fetchall()
+            cursor.close()
+            return result
+        except mysql.connector.Error as e:
+            print(f"Error executing query: {e}")
+            logger.log_text(f"Error executing query: {e}")
+            return None
 
 
 class MySQLManager(MySQLConnector):

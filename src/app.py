@@ -94,7 +94,9 @@ def on_reply(event):
     # to be implemented
 
     # 会話履歴DBから、該当のuser_idの会話履歴を取得
+    logger.log_text("会話履歴DBへの接続開始")
     conn = chat_db.connect()
+    logger.log_text("会話履歴DBへの接続終了")
     chat_history = chat_db.get(conn=conn, user_id=user_id)
     chat_db.close(conn)
     print("会話履歴の取得完了")
