@@ -89,6 +89,20 @@ def check_parse_filter(data: dict):
     pass
 
 
+def check_parse_extract_places(data: dict):
+    """
+    情報抽出に関するllmのjson出力が正しいのかをチェックする
+    """
+    try:
+        if "thought" in data and "keyword" in data:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        return False
+
+
 def build_user_prompt_refine(
     request: str, chat: list, stores_visited: list, num_chat: int = 2
 ):

@@ -3,7 +3,12 @@ from typing import Union
 
 from src.llm.aws import AWSBedrockClient
 from src.llm.azure import AzureClient
-from src.llm.utils import check_parse_extract, check_parse_refine, check_parse_filter
+from src.llm.utils import (
+    check_parse_extract,
+    check_parse_refine,
+    check_parse_filter,
+    check_parse_extract_places,
+)
 
 
 class LLM:
@@ -93,6 +98,9 @@ class LLM:
         elif mode == "filter":
             data = json.loads(response)
             return check_parse_filter(data)
+        elif mode == "extract_places":
+            data = json.loads(response)
+            return check_parse_extract_places(data)
         else:
             raise ValueError("Invalid mode")
 

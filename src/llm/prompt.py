@@ -267,6 +267,204 @@ Output :
 また、注意事項に違反していないかきちんと確認してください。
 
     """
+    prompt_extract_places = """
+あなたはGoogle Places APIのText Search (New)に入力するクエリを生成するためのアシスタントです。
+以下にユーザとボットの会話履歴が与えられます。ユーザは飲食店を問う質問をし、botはその条件にあった店を推薦しています。
+あなたはその会話履歴を分析し、ユーザの希望を所定の形式で抽出してJSONを作成してください。
+
+以下の形式でJSONを出力してください：
+{
+"thoughts": "チャット履歴からなぜそのような抽出条件を設定したかを述べる。",
+"keyword": "検索キーワード。料理のジャンルや、その他ユーザの希望を表すキーワードを指定する。"
+}
+
+注意事項：
+1. あなたが出力するキーワードを元に検索を行うGoogle Places APIのText Search (New)は、飲食店のみを検索の対象となるように設定しているので、キーワードに「レストラン」や「飲食店」といった自明なキーワードは指定しないでください。
+
+以下の会話履歴を分析し、上記のJSONを作成してください。回答は厳密にJSON形式で、JSONヘッダーのような余計なテキストは除いてください。
+
+出力は以下の例に従ってください。
+
+Example1
+
+[Input]
+Chat History :
+[0] User: 新宿周辺で昼食にラーメンを食べたいです。
+[1] Bot: [
+{
+"id": "J001039795",
+"name": "IZASA",
+"logo_image": "https://imgfp.hotp.jp/SYS/cmn/images/common/diary/custom/m30_img_noimage.gif",
+"name_kana": "いざさ",
+"address": "東京都文京区本郷５－２５－１７ドミネンス本郷１０２",
+"budget_average": "750円",
+"budget_name": "1501～2000円",
+"catch": "濃厚！！鶏白湯ラーメン！ クーポンで味玉サービス♪",
+"access": "地下鉄丸の内線本郷三丁目駅、都営大江戸線本郷三丁目駅より徒歩3分",
+"mobile_access": "本郷三丁目駅より徒歩3分",
+"urls": "https://www.hotpepper.jp/strJ001039795/?vos=nhppalsa000016",
+"photo_l": "https://imgfp.hotp.jp/IMGH/05/09/P020100509/P020100509_168.jpg",
+"photo_s": "https://imgfp.hotp.jp/IMGH/05/09/P020100509/P020100509_100.jpg",
+"open": "月～土、祝日、祝前日: 11:00～21:30 （料理L.O. 21:00 ドリンクL.O. 21:00）",
+"close": "日"
+},
+{
+"id": "J001264417",
+"name": "中華料理&横浜家系ラーメン 本郷家 ",
+"logo_image": "https://imgfp.hotp.jp/SYS/cmn/images/common/diary/custom/m30_img_noimage.gif",
+"name_kana": "よこはまいえけいらーめんほんごうや",
+"address": "東京都文京区本郷４丁目1－3",
+"budget_average": "",
+"budget_name": "2001～3000円",
+"catch": "本郷三丁目駅徒歩1分 持ち帰りOK！！",
+"access": "都営大江戸線本郷三丁目駅４出口1分/丸ノ内線本郷三丁目駅１出口2分/三田線春日駅、南北線後楽園駅A2出口徒歩13分",
+"mobile_access": "大江戸線本郷三丁目駅1分/丸ﾉ内線本郷三丁目駅2分",
+"urls": "https://www.hotpepper.jp/strJ001264417/?vos=nhppalsa000016",
+"photo_l": "https://imgfp.hotp.jp/IMGH/47/41/P037424741/P037424741_168.jpg",
+"photo_s": "https://imgfp.hotp.jp/IMGH/47/41/P037424741/P037424741_100.jpg",
+"open": "月～金: 11:00～20:00 （料理L.O. 19:45 ドリンクL.O. 19:45）日: 11:00～15:00 （料理L.O. 14:45 ドリンクL.O. 14:45）",
+"close": "土"
+}
+]
+[2] User: 家系が食べたい気分です。あと個室があるとありがたいのですが条件を満たすお店はある？
+[3] Bot: []
+
+--------------------------------
+Latest User Request :
+ないですか。家系で駐車場のある店はある？
+
+[Output]
+{
+"thoughts": "ユーザは昼食に駐車場付きのラーメン屋でを食べたいと思っている。したがって「家系　駐車場あり」を指定する。",
+"keyword": "家系　駐車場あり" 
+}
+
+Example2
+
+[Input]
+Chat History :
+[0] User : 
+10人で食べ飲み放題のお店を探しています。
+[1] Bot: 
+[
+{
+"id": "J001216679",
+"name": "焼肉 テっちゃん",
+"logo_image": "https://imgfp.hotp.jp/IMGH/83/70/P032328370/P032328370_69.jpg",
+"name_kana": "やきにく　てっちゃん",
+"address": "東京都文京区根津１-1-20 B1F",
+"budget_average": "3001円-4000円",
+"budget_name": "3001～4000円",
+"catch": "単品メニューも豊富です お一人様も大歓迎！",
+"access": "千代田線根津駅2番出口左側すぐ根津駅より53m",
+"mobile_access": "千代田線根津駅2番出口左側すぐ",
+"urls": "https://www.hotpepper.jp/strJ001216679/?vos=nhppalsa000016",
+"photo_l": "https://imgfp.hotp.jp/IMGH/81/61/P032328161/P032328161_168.jpg",
+"photo_s": "https://imgfp.hotp.jp/IMGH/81/61/P032328161/P032328161_100.jpg",
+"open": "月～金: 11:30～14:0017:00～23:30 （料理L.O. 23:00 ドリンクL.O. 23:00）土、日、祝日、祝前日: 17:00～23:30 （料理L.O. 23:00 ドリンクL.O. 23:00）",
+"close": "不定休"
+},
+{
+"id": "J001215058",
+"name": "中華料理居酒屋 食為天",
+"logo_image": "https://imgfp.hotp.jp/IMGH/47/73/P032104773/P032104773_69.jpg",
+"name_kana": "ねづ・やねせん　ちゅうかりょうりいざかや　すーいーてん",
+"address": "東京都文京区根津２-19-4",
+"budget_average": "1000～2000円",
+"budget_name": "1501～2000円",
+"catch": "気軽に本格中華ランチ！ 2～８名OKのテーブル席！",
+"access": "東京メトロ千代田線根津駅より徒歩約1分/東京メトロ千代田線千駄木駅より徒歩10分/東京メトロ南北線東大前駅より徒歩8分",
+"mobile_access": "東京ﾒﾄﾛ千代田線根津駅1出口より徒歩約1分",
+"urls": "https://www.hotpepper.jp/strJ001215058/?vos=nhppalsa000016",
+"photo_l": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_168.jpg",
+"photo_s": "https://imgfp.hotp.jp/IMGH/24/71/P037922471/P037922471_100.jpg",
+"open": "月～日、祝日、祝前日: 11:00～15:00 （料理L.O. 14:45 ドリンクL.O. 14:45）17:00～23:00 （料理L.O. 22:45 ドリンクL.O. 22:45）",
+"close": "特に無し"
+},
+{
+"id": "J001285639",
+"name": "ラーメンバル ゆきかげ",
+"logo_image": "https://imgfp.hotp.jp/IMGH/45/88/P038874588/P038874588_69.jpg",
+"name_kana": "らーめんばる　ゆきかげ",
+"address": "東京都文京区根津２-18-3",
+"budget_average": "ランチは1000円前後/ディナーは2000円～",
+"budget_name": "2001～3000円",
+"catch": "1階はカウンター お昼からハッピーアワー★",
+"access": "東京メトロ千代田線「根津」駅/出口1より徒歩1分",
+"mobile_access": "東京ﾒﾄﾛ千代田線｢根津｣駅/出口1より徒歩1分",
+"urls": "https://www.hotpepper.jp/strJ001285639/?vos=nhppalsa000016",
+"photo_l": "https://imgfp.hotp.jp/IMGH/81/47/P040238147/P040238147_168.jpg",
+"photo_s": "https://imgfp.hotp.jp/IMGH/81/47/P040238147/P040238147_100.jpg",
+"open": "月、金: 17:00～21:00 （料理L.O. 21:00 ドリンクL.O. 21:00）火: 11:00～14:00 （料理L.O. 14:00 ドリンクL.O. 14:00）17:00～21:00 （料理L.O. 21:00 ドリンクL.O. 21:00）水: 11:00～14:00 （料理L.O. 13:30 ドリンクL.O. 13:30）17:00～21:00 （料理L.O. 21:00 ドリンクL.O. 21:00）土、日、祝日: 11:00～21:00 （料理L.O. 21:00 ドリンクL.O. 21:00）",
+"close": "木"
+}
+]
+
+--------------------------------
+Latest User Request :
+ラーメンや中華料理も捨てがたいけど、肉の気分なんですよねー。あ、そういえば未成年がいたので飲み放題はなしでいいです。
+
+Output :
+{
+"thoughts": "ユーザは10人で食べ放題のお店で、肉を提供してくれるお店を探している。そのため、「肉　食べ放題　大人数」を指定する。",
+"keyword": "肉　食べ放題　大人数"
+}
+
+Example3
+
+[Input]
+Chat History :
+[0] User : 
+夜景が綺麗なお店でイタリアンを食べられるレストランに行きたいです。
+[1] Bot :
+[]
+[2] User:
+そもそもこの付近に夜景が綺麗なイタリアンってあるの？
+[3] Bot :
+[]
+
+--------------------------------
+Latest User Request :
+ないのかー。じゃあイタリアンはある？
+
+[Output] 
+{
+"thoughts": "ユーザは初め夜景が綺麗なイタリアンを食べたいと思っていたが、最終的にはイタリアンのみを指定している。そのため、「イタリアン」を指定する。",
+"keyword": "イタリアン"
+}
+
+Example4
+[Input]
+Chat History :
+
+--------------------------------
+Latest User Request :
+1000円くらいで適当に昼飯を済ませたいんだけどおすすめのレストランはある？
+Output :
+{
+"thoughts": "ユーザは1000円で昼食を済ませたいと思っている。そこで「ランチ　お手頃」を指定する。",
+"keyword": "ランチ　お手頃"
+}
+
+Example5
+[Input]
+Chat History :
+
+--------------------------------
+Latest User Request :
+個室がある食べ放題の居酒屋を探しています。
+
+Output :
+{
+"thoughts": "ユーザは食べ放題で個室がある居酒屋を探している。そこで、「食べ放題　個室　居酒屋」を指定する。",
+"keyword": "居酒屋　個室　居酒屋"
+}
+
+以下に、ユーザの会話履歴を示します。
+回答は厳密にJSON形式で、JSONヘッダーのような余計なテキストは除いてください。さもなければシステムが崩壊します。
+また、注意事項に違反していないかきちんと確認してください。
+
+"""
 
     prompt_filter = """
         to be implemented
@@ -508,3 +706,5 @@ Latest User Request :
         return prompt_filter
     elif name == "refine":
         return prompt_refine
+    elif name == "extract_places":
+        return prompt_extract_places
