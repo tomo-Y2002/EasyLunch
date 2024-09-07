@@ -144,7 +144,7 @@ class LineMessagingClient:
 
         Parameters
         ----------
-        userId : str
+        user_id : str
             メッセージを送信する対象のユーザーID。
         msg : str
             送信するメッセージの内容。
@@ -178,12 +178,44 @@ class LineMessagingClient:
         data : str
             フレックスメッセージ
         """
-
         access_token = self.line_channel_access_token
         url = "https://api.line.me/v2/bot/message/push"
         headers = {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + access_token,
+        }
+        response = requests.post(url, headers=headers, json=data)
+        print(response.status_code)
+
+
+    def send_loading(self, user_id):
+        """
+        指定したユーザーIDのトーク画面にローディングアニメーションを表示します。
+
+        Parameters
+        ----------
+        user_id : str
+            メッセージを送信する対象のユーザーID。
+
+        Returns
+        -------
+        なし
+
+        Notes
+        -----
+        このメソッドは、指定されたユーザーIDに対してローディングアニメーションを送信します。
+        ローディングアニメーションの表示時間は最大で60秒です。
+        エラーが発生した場合は、エラーメッセージをコンソールに出力します。
+        """
+        access_token = self.line_channel_access_token
+        url = "https://api.line.me/v2/bot/chat/loading/start"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + access_token,
+        }
+        data = {
+            "chatId": user_id,
+            "loadingSeconds": 60
         }
         response = requests.post(url, headers=headers, json=data)
         print(response.status_code)
