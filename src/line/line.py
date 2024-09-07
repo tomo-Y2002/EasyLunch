@@ -7,7 +7,10 @@ from linebot.v3.messaging import (
     PushMessageRequest,
 )
 import requests
-import logging
+from google.cloud.logging import Client
+
+logging_client = Client()
+logger = logging_client.logger("easylunch")
 
 
 class LineMessagingClient:
@@ -187,7 +190,7 @@ class LineMessagingClient:
         }
         response = requests.post(url, headers=headers, json=data)
         print(response.status_code)
-        logging.info(f"Flex Messageの送信完了: {response.status_code}")
+        logger.log_text(f"Flex Messageの送信完了: {response.status_code}")
 
     def send_loading(self, user_id):
         """
