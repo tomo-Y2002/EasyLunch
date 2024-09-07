@@ -29,7 +29,7 @@ line_bot_handler = LineMessagingClient(
 
 @line_bot_handler.handler.add(MessageEvent, message=TextMessageContent)
 def reply_FM(event):
-    template = "./src/test/line/hotpepper.json"
+    template = "./src/test/line/places.json"
     with open(template, "r", encoding="utf-8") as f:
         stores = json.load(f)
     template_path = "./src/line/template.json"
