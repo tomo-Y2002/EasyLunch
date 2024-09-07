@@ -1,6 +1,8 @@
 import json
+from typing import Union
 
 from src.llm.aws import AWSBedrockClient
+from src.llm.azure import AzureClient
 from src.llm.utils import check_parse_extract, check_parse_refine, check_parse_filter
 
 
@@ -15,20 +17,32 @@ class LLM:
         llm_type: str,
         aws_access_key_id: str = "",
         aws_secret_access_key: str = "",
-        region_name: str = "",
+        aws_region_name: str = "",
+        azure_api_key: str = "",
+        azure_endpoint: str = "",
+        azure_api_version: str = "",
     ):
         if llm_type == "claude 3.5 sonnet":
             if (
                 aws_access_key_id == ""
                 or aws_secret_access_key == ""
-                or region_name == ""
+                or aws_region_name == ""
             ):
                 raise ValueError("Invalid args")
             self.client = AWSBedrockClient(
                 aws_access_key_id=aws_access_key_id,
                 aws_secret_access_key=aws_secret_access_key,
-                region_name=region_name,
+                aws_region_name=aws_region_name,
             )
+        elif llm_type == "gpt-4o":
+            if azure_api_key == "" or azure_endpoint == "" or azure_api_version == "":
+                raise ValueError("Invalid args")
+            self.client = AzureClient(
+                azure_api_key=azure_api_key,
+                azure_endpoint=azure_endpoint,
+                azure_api_version=azure_api_version,
+            )
+
         else:
             raise ValueError("Invalid type")
 
@@ -45,7 +59,7 @@ class LLM:
             prompt_system : システムプロンプト。モデルの出力の条件付けを行う
             prompt_image : 画像の base64 エンコードされたもの
         Returns:
-            dict形式のprompt
+            dict or list形式のprompt
         """
         return self.client.build_prompt(prompt_system, image_encoded, prompt_user)
 
@@ -83,13 +97,17 @@ class LLM:
             raise ValueError("Invalid mode")
 
     def call_retry(
-        self, mode: str, prompt: str, max_tokens: int = 1024, temperature: float = 0.1
+        self,
+        mode: str,
+        prompt: Union[list, dict],
+        max_tokens: int = 1024,
+        temperature: float = 0.1,
     ):
         """
         callメソッドがjson出力に失敗する場合にリトライを行うようにする
         Args:
             mode : チェックするモード。"extract", "refine", "filter" のいずれか
-            prompt : llmに入力するprompt
+            prompt : llmに入力するprompt。list形式もしくはdict形式
         Returns:
             response : llmの出力
         """

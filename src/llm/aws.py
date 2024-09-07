@@ -10,12 +10,12 @@ class AWSBedrockClient:
     """
 
     def __init__(
-        self, aws_access_key_id: str, aws_secret_access_key: str, region_name: str
+        self, aws_access_key_id: str, aws_secret_access_key: str, aws_region_name: str
     ):
         self.session = boto3.Session(
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key,
-            region_name=region_name,
+            region_name=aws_region_name,
         )
         self.client = self.session.client(service_name="bedrock-runtime")
         self.model_id = "anthropic.claude-3-5-sonnet-20240620-v1:0"
