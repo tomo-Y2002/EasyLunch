@@ -13,16 +13,30 @@ sys.path.append(
 from src.llm.prompt import select_prompt
 from src.llm.utils import build_user_prompt_extract
 from src.llm.llm_call import LLM
+from src.db.access.chat import ChatDB
+
 
 with open("config.yaml", encoding="utf-8") as f:
     configs = yaml.safe_load(f)
+
+chat_db = ChatDB(
+    host=configs["MYSQL_HOST"],
+    user=configs["MYSQL_USER"],
+    password=configs["MYSQL_PASSWORD"],
+    database=configs["MYSQL_DATABASE"],
+)
+conn = chat_db.connect()
+chat_history = chat_db.get(conn=conn, user_id="U461e74eab9cf27cc7e3f034174bc63db")
+chat_db.close(conn)
+with open("./src/test/llm/chat_history_places.pickle", "wb") as f:
+    pickle.dump(chat_history, f)
 
 
 def main():
     request = "ラーメンに行きたいです"
 
     # chat_historyをpickleで読み込む
-    with open("./src/test/llm/chat_history.pickle", "rb") as f:
+    with open("./src/test/llm/chat_history_places.pickle", "rb") as f:
         chat_history = pickle.load(f)
 
     prompt_user = build_user_prompt_extract(request, chat_history)
@@ -33,11 +47,11 @@ def main():
         aws_region_name=configs["AWS_REGION"],
     )
     prompt = client._build_prompt(
-        prompt_system=select_prompt("extract"),
+        prompt_system=select_prompt("extract_places"),
         image_encoded="",
         prompt_user=prompt_user,
     )
-    condition = client.call_retry(mode="extract", prompt=prompt)
+    condition = client.call_retry(mode="extract_places", prompt=prompt)
 
     # 会話履歴、プロンプト、抽出結果の最初の方を表示
     print("会話履歴:")
