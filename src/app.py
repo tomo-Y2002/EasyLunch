@@ -82,7 +82,7 @@ def on_reply(event):
     text = event.message.text
     user_id = get_id(event)
     print(f"ユーザ {user_id} がメッセージを送信しました: {text}")
-
+    line_bot_handler.send_loading(user_id)
     # フィルタリング処理
     # to be implemented
 
