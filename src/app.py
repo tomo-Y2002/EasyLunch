@@ -56,6 +56,7 @@ visit_db = VisitDB(
     user=os.environ.get("MYSQL_USER"),
     password=os.environ.get("MYSQL_PASSWORD"),
     database=os.environ.get("MYSQL_DATABASE"),
+    is_gc=bool(os.environ.get("IS_GOOGLE_CLOUD")),
 )
 llm_client = LLM(
     llm_type=os.environ.get("LLM_TYPE"),
@@ -124,10 +125,11 @@ def on_reply(event):
     chat_history = chat_db.get(conn=conn, user_id=user_id)
     logger.log_text("会話履歴の取得完了")
     chat_db.close(conn)
-    print("会話履歴の取得完了")
-    logger.log_text("会話履歴の取得完了")
+    print("会話履歴DBとの接続を終了")
+    logger.log_text("会話履歴DBとの接続を終了")
 
     # 来店履歴DBから、該当のuser_idの来店履歴を取得
+    logger.log_text("来店履歴DBへの接続開始")
     conn = visit_db.connect()
     visit_history = visit_db.get(conn=conn, user_id=user_id)
     visit_db.close(conn)

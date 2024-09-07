@@ -29,7 +29,6 @@ class MySQLConnector:
         データベースへの接続を行う
         """
         try:
-            logger.log_text("Connecting to MySQL Platform")
             logger.log_text(
                 f"host: {self.host}, user: {self.user}, database: {self.database}, password: {self.password}, port: {self.port}"
             )
