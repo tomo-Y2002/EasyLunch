@@ -7,6 +7,7 @@ from linebot.v3.messaging import (
     PushMessageRequest,
 )
 import requests
+import logging
 
 
 class LineMessagingClient:
@@ -186,7 +187,7 @@ class LineMessagingClient:
         }
         response = requests.post(url, headers=headers, json=data)
         print(response.status_code)
-
+        logging.info(f"Flex Messageの送信完了: {response.status_code}")
 
     def send_loading(self, user_id):
         """
@@ -213,9 +214,6 @@ class LineMessagingClient:
             "Content-Type": "application/json",
             "Authorization": "Bearer " + access_token,
         }
-        data = {
-            "chatId": user_id,
-            "loadingSeconds": 60
-        }
+        data = {"chatId": user_id, "loadingSeconds": 60}
         response = requests.post(url, headers=headers, json=data)
         print(response.status_code)

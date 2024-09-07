@@ -85,6 +85,7 @@ def on_reply(event):
     text = event.message.text
     user_id = get_id(event)
     print(f"ユーザ {user_id} がメッセージを送信しました: {text}")
+    app.logger.info(f"ユーザ {user_id} がメッセージを送信しました: {text}")
     line_bot_handler.send_loading(user_id)
     # フィルタリング処理
     # to be implemented
@@ -94,12 +95,14 @@ def on_reply(event):
     chat_history = chat_db.get(conn=conn, user_id=user_id)
     chat_db.close(conn)
     print("会話履歴の取得完了")
+    app.logger.info("会話履歴の取得完了")
 
     # 来店履歴DBから、該当のuser_idの来店履歴を取得
     conn = visit_db.connect()
     visit_history = visit_db.get(conn=conn, user_id=user_id)
     visit_db.close(conn)
     print("来店履歴の取得完了")
+    app.logger.info("来店履歴の取得完了")
 
     prompt_extract_user = build_user_prompt_extract(
         request=text,
@@ -113,11 +116,13 @@ def on_reply(event):
     )
     condition = llm_client.call_retry(mode="extract", prompt=prompt_extract)
     print("情報抽出完了")
+    app.logger.info("情報抽出完了")
 
     # ホットペッパーAPIで飲食店検索
     condition = json.loads(condition)
     stores = hotpepper_client.search_essential(condition, count=15)
     print("ホットペッパーでの検索完了")
+    app.logger.info("ホットペッパーでの検索完了")
 
     # 来店履歴から、ユーザに沿ったものがあればLLMで抽出して返す
     stores_visited = []
@@ -127,6 +132,7 @@ def on_reply(event):
             stores_visited.append(res[0])
     stores_visited = stores_visited[:10]  # 10件までに制限
     print("来店履歴の検索完了")
+    app.logger.info("来店履歴の検索完了")
     prompt_refine_user = build_user_prompt_refine(
         request=text,
         chat=chat_history,
@@ -145,15 +151,18 @@ def on_reply(event):
             0
         ]  # 置換作業
     print("来店履歴からの情報追加完了")
+    app.logger.info("来店履歴からの情報追加完了")
 
     # storesをFlex Messageに変換して、ユーザに返す
     if len(stores) == 0:
         line_bot_handler.send_text(user_id, "条件に合うお店が見つかりませんでした 😢")
         print("条件に合うお店が見つからなかったメッセージを送信")
+        app.logger.info("条件に合うお店が見つからなかったメッセージを送信")
     else:
         flex_message = create_carousel(user_id, stores=stores, num=5)
         line_bot_handler.send_flex(flex_message)
         print("Flex Messageの送信完了")
+        app.logger.info("Flex Messageの送信完了")
 
     # 会話履歴DBにユーザとBOTの返答を追加
     conn = chat_db.connect()
@@ -172,6 +181,7 @@ def on_reply(event):
     chat_db.commit(conn)
     chat_db.close(conn)
     print("会話履歴の更新完了")
+    app.logger.info("会話履歴の更新完了")
 
 
 @app.route("/callback", methods=["POST"])
