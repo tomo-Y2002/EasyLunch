@@ -22,6 +22,17 @@ python ./src/test/hot_pepper/change_if_match.py
 (ex,`["J001232494", "J001194791", "J001052469"]`)  
 を順に見ていって、その中に条件に合うものがあったら都度5つ目の要素をその店舗と変更するように実装しています。
 
+### google_places
+**search_essential.py**
+```bash
+python ./src/test/google_places/search_essential.py
+```
+Google Places APIを叩いた結果が表示されます。
+検索キーワードをもとに検索した結果、店舗idをもとに検索した結果が順に表示されます。
+
+**search_with_id.py**
+
+
 ### llm
 **aws.py**
 ```bash
