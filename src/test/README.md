@@ -35,13 +35,25 @@ python ./src/test/llm/llm_call.py -t "モデル名"
 ```
 -t 以降に使用したいモデル名を指定することで、モデルに応じたクライアントが(aws bedrock, cotomi, azure) から選択されます。  
 画像入力, system prompt, user prompt のすべてを使用したテスト結果が表示されます。  
-現在 ```"モデル名"```　の箇所は "claude 3.5 sonnet" のみ対応しています。
+現在 ```"モデル名"```　の箇所は "claude 3.5 sonnet" と""gpt-4o"のみ対応しています。
 
 **extract_info.py**
 ```bash
 python ./src/test/llm/extract_info.py
 ```
 chat_history.pickle に保存された会話履歴を使用して、ユーザプロンプトを作成し、ユーザが飲食店に対し求めている条件を抽出します。  
+
+**refine.py**
+```bash
+python ./src/test/llm/refine.py
+```
+来店履歴からユーザの要望に沿ったお店を抽出します。
+
+**azure.py**
+```bash
+python ./src/test/llm/azure.py
+```
+AzureにデプロイされているOpenAIのモデルにアクセスして結果を返します。
 
 ### line
 **send_flex.py**

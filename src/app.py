@@ -42,10 +42,13 @@ visit_db = VisitDB(
     database=os.environ.get("MYSQL_DATABASE"),
 )
 llm_client = LLM(
-    llm_type="claude 3.5 sonnet",
+    llm_type=os.environ.get("LLM_TYPE"),
     aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
     aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
     aws_region_name=os.environ.get("AWS_REGION"),
+    azure_api_key=os.environ.get("AZURE_API_KEY"),
+    azure_endpoint=os.environ.get("AZURE_ENDPOINT"),
+    azure_api_version=os.environ.get("AZURE_API_VERSION"),
 )
 hotpepper_client = HotPepperClient(
     hot_pepper_api_key=os.environ.get("HOT_PEPPER_API_KEY"),

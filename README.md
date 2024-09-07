@@ -37,3 +37,5 @@ src/db/docker/README.mdの指示に従って、データベースの立ち上げ
 ```bash
 python src/app.py
 ```
+config.yaml(or 環境変数)の```LLM_TYPE```は現在```claude 3.5 sonnet```と```gpt-4o```の二つのversionに対応してあります。  
+これらを編集することで、BOTがアクセスするLLMのタイプを編集することができます。
