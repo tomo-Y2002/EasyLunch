@@ -38,6 +38,7 @@ logger.log_text(
     f"LINE_CHANNEL_ACCESS_TOKEN: {os.environ.get('LINE_CHANNEL_ACCESS_TOKEN')}"
 )
 logger.log_text(f"PORT: {os.environ.get('PORT')}")
+logger.log_text(f"type(PORT): {type(os.environ.get('PORT'))}")
 chat_db = ChatDB(
     host=os.environ.get("MYSQL_HOST"),
     user=os.environ.get("MYSQL_USER"),

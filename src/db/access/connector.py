@@ -15,6 +15,7 @@ class MySQLConnector:
         self.user = user
         self.password = password
         self.database = database
+        self.port = 3306
         logger.log_text(
             f"host: {host}, user: {user}, database: {database}, password: {password}"
         )
@@ -32,6 +33,7 @@ class MySQLConnector:
                 user=self.user,
                 password=self.password,
                 database=self.database,
+                port=self.port,
             )
             return conn
         except mysql.connector.Error as e:
