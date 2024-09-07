@@ -15,5 +15,5 @@ MYSQL_HOST: "localhost"
 MYSQL_USER: "easylunch_user"
 MYSQL_PASSWORD: "same as your mysql password in src/db/docker/.env_mysql" 
 MYSQL_DATABASE: "easylunch_database"
-GOOGLE_PLACES_API_KEY: "AIzaSyBtyA4nlmC6uTBlqzcJSon2SomSL0TurBo"
+GOOGLE_PLACES_API_KEY: "your-google-places-api-key"
 
