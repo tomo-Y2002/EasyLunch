@@ -45,11 +45,17 @@ python ./src/test/llm/llm_call.py -t "モデル名"
 画像入力, system prompt, user prompt のすべてを使用したテスト結果が表示されます。  
 現在 ```"モデル名"```　の箇所は "claude 3.5 sonnet" と""gpt-4o"のみ対応しています。
 
-**extract_info.py**
+**extract_hotpepper.py**
 ```bash
-python ./src/test/llm/extract_info.py
+python ./src/test/llm/extract_hotpepper.py
 ```
-chat_history.pickle に保存された会話履歴を使用して、ユーザプロンプトを作成し、ユーザが飲食店に対し求めている条件を抽出します。  
+chat_history_hotpepper.pickle に保存された会話履歴を使用して、ユーザプロンプトを作成し、ユーザが飲食店に対し求めている条件を抽出します。  
+
+**extract_places.py**
+```bash
+python ./src/test/llm/extract_places.py
+```
+Google Places APIを叩いた結果を元に、ユーザプロンプトを作成し、ユーザが飲食店に対し求めている条件を抽出します。  
 
 **refine.py**
 ```bash
