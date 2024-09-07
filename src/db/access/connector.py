@@ -94,8 +94,8 @@ class MySQLManager(MySQLConnector):
     MySQLのDBに対して CRUD 操作を行うクラス
     """
 
-    def __init__(self, host, user, password, database):
-        super().__init__(host, user, password, database)
+    def __init__(self, host, user, password, database, is_gc=False):
+        super().__init__(host, user, password, database, is_gc)
 
     def create(self, conn, table: str, columns: list, values: list):
         """
