@@ -33,9 +33,29 @@ src/db/docker/README.mdの指示に従って、データベース用のクレデ
 src/db/docker/README.mdの指示に従って、データベースの立ち上げを行います。
 
 ### ボットサーバーの立ち上げ
+まず、config.yamlを編集して
+```yaml
+MYSQL_HOST: "localhost"
+```
+と編集します。
 以下のコマンドでLINEボットサーバーを立ち上げることが出来ます。
 ```bash
 python src/app.py
 ```
 config.yaml(or 環境変数)の```LLM_TYPE```は現在```claude 3.5 sonnet```と```gpt-4o```の二つのversionに対応してあります。  
 これらを編集することで、BOTがアクセスするLLMのタイプを編集することができます。
+
+### Docker環境での立ち上げ
+まず、config.yamlを編集して
+```yaml
+MYSQL_HOST: "db"
+```
+と編集します。
+次に以下のコマンドでDockerコンテナを立ち上げます。
+```bash
+docker compose up -d
+```
+最後に以下のコマンドでログをターミナルに流すようにします。
+```bash
+docker logs -f easylunch_server
+```
