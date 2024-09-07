@@ -87,19 +87,27 @@ class MySQLManager(MySQLConnector):
         """
         データを新規作成する
         """
-        query = (
-            f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({', '.join(values)})"
-        )
-        return self.execute(conn, query)
+        try:
+            query = f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({', '.join(values)})"
+            return self.execute(conn, query)
+        except mysql.connector.Error as e:
+            print(f"Error creating data: {e}")
+            logger.log_text(f"Error creating data: {e}")
+            return None
 
     def read(self, conn, table: str, columns: list, condition: str = None):
         """
         データを取得する
         """
-        query = f"SELECT {', '.join(columns)} FROM {table}"
-        if condition:
-            query += f" WHERE {condition}"
-        return self.execute(conn, query)
+        try:
+            query = f"SELECT {', '.join(columns)} FROM {table}"
+            if condition:
+                query += f" WHERE {condition}"
+            return self.execute(conn, query)
+        except mysql.connector.Error as e:
+            print(f"Error reading data: {e}")
+            logger.log_text(f"Error reading data: {e}")
+            return None
 
     def update(
         self, conn, table: str, columns: list, values: list, condition: str = None
@@ -107,23 +115,33 @@ class MySQLManager(MySQLConnector):
         """
         データを更新する
         """
-        if len(columns) != len(values):
-            raise ValueError("columns と values の要素数が一致しません")
+        try:
+            if len(columns) != len(values):
+                raise ValueError("columns と values の要素数が一致しません")
 
-        query = f"UPDATE {table} SET "
-        query += ", ".join(
-            [f"{column} = {value}" for column, value in zip(columns, values)]
-        )
-        if condition:
-            query += f" WHERE {condition}"
-        return self.execute(conn, query)
+            query = f"UPDATE {table} SET "
+            query += ", ".join(
+                [f"{column} = {value}" for column, value in zip(columns, values)]
+            )
+            if condition:
+                query += f" WHERE {condition}"
+            return self.execute(conn, query)
+        except mysql.connector.Error as e:
+            print(f"Error updating data: {e}")
+            logger.log_text(f"Error updating data: {e}")
+            return None
 
     def delete(self, conn, table: str, condition: str):
         """
         データを削除する
         """
-        if not condition:
-            raise ValueError("condition が指定されていません")
+        try:
+            if not condition:
+                raise ValueError("condition が指定されていません")
 
-        query = f"DELETE FROM {table} WHERE {condition}"
-        return self.execute(conn, query)
+            query = f"DELETE FROM {table} WHERE {condition}"
+            return self.execute(conn, query)
+        except mysql.connector.Error as e:
+            print(f"Error deleting data: {e}")
+            logger.log_text(f"Error deleting data: {e}")
+            return None

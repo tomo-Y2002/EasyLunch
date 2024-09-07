@@ -119,6 +119,7 @@ def on_reply(event):
     conn = chat_db.connect()
     logger.log_text("会話履歴DBへの接続終了")
     chat_history = chat_db.get(conn=conn, user_id=user_id)
+    logger.log_text("会話履歴の取得完了")
     chat_db.close(conn)
     print("会話履歴の取得完了")
     logger.log_text("会話履歴の取得完了")
