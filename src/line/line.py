@@ -7,10 +7,7 @@ from linebot.v3.messaging import (
     PushMessageRequest,
 )
 import requests
-from google.cloud.logging import Client
-
-logging_client = Client()
-logger = logging_client.logger("easylunch")
+from src.api.google_logging import Logging
 
 
 class LineMessagingClient:
@@ -61,6 +58,7 @@ class LineMessagingClient:
         line_channel_secret: str,
         line_channel_access_token: str,
         port: int,
+        is_gc: bool = False,
     ):
         """
         LineMessagingApiクラスのコンストラクタ。
@@ -100,6 +98,7 @@ class LineMessagingClient:
         self.line_channel_secret = line_channel_secret
         self.line_channel_access_token = line_channel_access_token
         self.port = port
+        self.logger = Logging(is_gc=is_gc)
 
         try:
             self.handler = WebhookHandler(channel_secret=self.line_channel_secret)
@@ -190,7 +189,7 @@ class LineMessagingClient:
         }
         response = requests.post(url, headers=headers, json=data)
         print(response.status_code)
-        logger.log_text(f"Flex Messageの送信完了: {response.status_code}")
+        self.logger.log_text(f"Flex Messageのstatus: {response.status_code}")
 
     def send_loading(self, user_id):
         """

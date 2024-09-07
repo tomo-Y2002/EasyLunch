@@ -5,7 +5,6 @@ import json
 from flask import Flask, request, abort
 from linebot.exceptions import InvalidSignatureError
 from linebot.v3.webhooks import MessageEvent, TextMessageContent, PostbackEvent
-from google.cloud.logging import Client
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -17,6 +16,7 @@ from src.llm.llm_call import LLM
 from src.llm.prompt import select_prompt
 from src.llm.utils import build_user_prompt_refine, build_user_prompt_extract
 from src.api.hot_pepper import HotPepperClient
+from src.api.google_logging import Logging
 
 if os.path.exists("config.yaml"):
     with open("config.yaml", encoding="utf-8") as f:
@@ -24,14 +24,14 @@ if os.path.exists("config.yaml"):
         for key, value in config_data.items():
             os.environ[key] = str(value)
 
-logging_client = Client()
-logger = logging_client.logger("easylunch")
+logger = Logging(is_gc=bool(os.environ.get("IS_GOOGLE_CLOUD") == "true"))
 
 app = Flask(__name__)
 line_bot_handler = LineMessagingClient(
     line_channel_secret=os.environ.get("LINE_CHANNEL_SECRET"),
     line_channel_access_token=os.environ.get("LINE_CHANNEL_ACCESS_TOKEN"),
     port=os.environ.get("PORT"),
+    is_gc=bool(os.environ.get("IS_GOOGLE_CLOUD") == "true"),
 )
 logger.log_text(f"LINE_CHANNEL_SECRET: {os.environ.get('LINE_CHANNEL_SECRET')}")
 logger.log_text(
@@ -44,7 +44,7 @@ chat_db = ChatDB(
     user=os.environ.get("MYSQL_USER"),
     password=os.environ.get("MYSQL_PASSWORD"),
     database=os.environ.get("MYSQL_DATABASE"),
-    is_gc=bool(os.environ.get("IS_GOOGLE_CLOUD")),
+    is_gc=bool(os.environ.get("IS_GOOGLE_CLOUD") == "true"),
 )
 logger.log_text(f"MYSQL_HOST: {os.environ.get('MYSQL_HOST')}")
 logger.log_text(f"MYSQL_USER: {os.environ.get('MYSQL_USER')}")
@@ -56,7 +56,7 @@ visit_db = VisitDB(
     user=os.environ.get("MYSQL_USER"),
     password=os.environ.get("MYSQL_PASSWORD"),
     database=os.environ.get("MYSQL_DATABASE"),
-    is_gc=bool(os.environ.get("IS_GOOGLE_CLOUD")),
+    is_gc=bool(os.environ.get("IS_GOOGLE_CLOUD") == "true"),
 )
 llm_client = LLM(
     llm_type=os.environ.get("LLM_TYPE"),
@@ -119,17 +119,13 @@ def on_reply(event):
     # to be implemented
 
     # 会話履歴DBから、該当のuser_idの会話履歴を取得
-    logger.log_text("会話履歴DBへの接続開始")
     conn = chat_db.connect()
-    logger.log_text("会話履歴DBへの接続終了")
     chat_history = chat_db.get(conn=conn, user_id=user_id)
-    logger.log_text("会話履歴の取得完了")
     chat_db.close(conn)
     print("会話履歴DBとの接続を終了")
     logger.log_text("会話履歴DBとの接続を終了")
 
     # 来店履歴DBから、該当のuser_idの来店履歴を取得
-    logger.log_text("来店履歴DBへの接続開始")
     conn = visit_db.connect()
     visit_history = visit_db.get(conn=conn, user_id=user_id)
     visit_db.close(conn)

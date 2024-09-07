@@ -1,8 +1,5 @@
 import mysql.connector
-from google.cloud.logging import Client
-
-logging_client = Client()
-logger = logging_client.logger("easylunch")
+from src.api.google_logging import Logging
 
 
 class MySQLConnector:
@@ -16,22 +13,13 @@ class MySQLConnector:
         self.password = password
         self.database = database
         self.is_gc = is_gc
-        self.port = 3306
-        logger.log_text(
-            f"host: {host}, user: {user}, database: {database}, password: {password}"
-        )
-        logger.log_text(
-            f"type(host): {type(host)}, type(user): {type(user)}, type(database): {type(database)}, type(password): {type(password)}"
-        )
+        self.logger = Logging(is_gc=is_gc)
 
     def connect(self):
         """
         データベースへの接続を行う
         """
         try:
-            logger.log_text(
-                f"host: {self.host}, user: {self.user}, database: {self.database}, password: {self.password}, port: {self.port}"
-            )
             if self.is_gc:
                 conn = mysql.connector.connect(
                     unix_socket=self.host,
@@ -49,7 +37,7 @@ class MySQLConnector:
             return conn
         except mysql.connector.Error as e:
             print(f"Error connecting to MySQL Platform: {e}")
-            logger.log_text(f"Error connecting to MySQL Platform: {e}")
+            self.logger.log_text(f"Error connecting to MySQL Platform: {e}")
             return None
 
     def close(self, conn):
@@ -60,7 +48,7 @@ class MySQLConnector:
             conn.close()
         except mysql.connector.Error as e:
             print(f"Error closing MySQL connection: {e}")
-            logger.log_text(f"Error closing MySQL connection: {e}")
+            self.logger.log_text(f"Error closing MySQL connection: {e}")
 
     def commit(self, conn):
         """
@@ -70,7 +58,7 @@ class MySQLConnector:
             conn.commit()
         except mysql.connector.Error as e:
             print(f"Error committing transaction: {e}")
-            logger.log_text(f"Error committing transaction: {e}")
+            self.logger.log_text(f"Error committing transaction: {e}")
 
     def execute(self, conn, query):
         """
@@ -84,7 +72,7 @@ class MySQLConnector:
             return result
         except mysql.connector.Error as e:
             print(f"Error executing query: {e}")
-            logger.log_text(f"Error executing query: {e}")
+            self.logger.log_text(f"Error executing query: {e}")
             return None
 
 
@@ -105,7 +93,7 @@ class MySQLManager(MySQLConnector):
             return self.execute(conn, query)
         except mysql.connector.Error as e:
             print(f"Error creating data: {e}")
-            logger.log_text(f"Error creating data: {e}")
+            self.logger.log_text(f"Error creating data: {e}")
             return None
 
     def read(self, conn, table: str, columns: list, condition: str = None):
@@ -119,7 +107,7 @@ class MySQLManager(MySQLConnector):
             return self.execute(conn, query)
         except mysql.connector.Error as e:
             print(f"Error reading data: {e}")
-            logger.log_text(f"Error reading data: {e}")
+            self.logger.log_text(f"Error reading data: {e}")
             return None
 
     def update(
@@ -141,7 +129,7 @@ class MySQLManager(MySQLConnector):
             return self.execute(conn, query)
         except mysql.connector.Error as e:
             print(f"Error updating data: {e}")
-            logger.log_text(f"Error updating data: {e}")
+            self.logger.log_text(f"Error updating data: {e}")
             return None
 
     def delete(self, conn, table: str, condition: str):
@@ -156,5 +144,5 @@ class MySQLManager(MySQLConnector):
             return self.execute(conn, query)
         except mysql.connector.Error as e:
             print(f"Error deleting data: {e}")
-            logger.log_text(f"Error deleting data: {e}")
+            self.logger.log_text(f"Error deleting data: {e}")
             return None

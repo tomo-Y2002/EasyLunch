@@ -59,3 +59,12 @@ docker compose up -d
 ```bash
 docker logs -f easylunch_server
 ```
+
+### Google Cloud でのデプロイ
+config.yamlを編集して、
+```yaml
+IS_GOOGLE_CLOUD: true
+...
+MY_SQL_HOST: "デプロイしたSQLサーバのunix(...)の中身..."
+```
+となるようにして行う。
