@@ -1,6 +1,7 @@
 import json
 
 from src.llm.aws import AWSBedrockClient
+from src.llm.azure import AzureClient
 from src.llm.utils import check_parse_extract, check_parse_refine, check_parse_filter
 
 
@@ -15,19 +16,19 @@ class LLM:
         llm_type: str,
         aws_access_key_id: str = "",
         aws_secret_access_key: str = "",
-        region_name: str = "",
+        aws_region_name: str = "",
     ):
         if llm_type == "claude 3.5 sonnet":
             if (
                 aws_access_key_id == ""
                 or aws_secret_access_key == ""
-                or region_name == ""
+                or aws_region_name == ""
             ):
                 raise ValueError("Invalid args")
             self.client = AWSBedrockClient(
                 aws_access_key_id=aws_access_key_id,
                 aws_secret_access_key=aws_secret_access_key,
-                region_name=region_name,
+                aws_region_name=aws_region_name,
             )
         else:
             raise ValueError("Invalid type")
