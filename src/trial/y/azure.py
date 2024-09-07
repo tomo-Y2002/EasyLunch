@@ -2,7 +2,7 @@ from openai import AzureOpenAI
 import yaml
 
 
-with open("../../../config.yaml", "r") as f:
+with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 client = AzureOpenAI(
     azure_endpoint=config["AZURE_ENDPOINT"],
@@ -25,6 +25,8 @@ response = client.chat.completions.create(
         },
         {"role": "user", "content": "日本語で質問してよいですか？"},
     ],
+    max_tokens=1024,
+    temperature=0.1,
 )
 
 print(response.choices[0].message.content)
