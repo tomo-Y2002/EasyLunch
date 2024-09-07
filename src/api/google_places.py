@@ -54,6 +54,23 @@ class GooglePlacesClient:
         Returns:
         ----------
         list: 各店舗の必要な情報を含む辞書のリスト。
+            ex) [
+                    {
+                        'id': 'ChIJg9-dwtaPGGARATZrumJcivI',
+                        'name': '店舗名',
+                        'latitude': 35.71452370573787,
+                        'longitude': 139.76181006885508,
+                        'rating': 4.5,
+                        'Urls': 'google mapのURL',
+                        'priceLevel': 2,
+                        'photo': '写真のURL'
+                    },
+                    {
+                        'id': 'ChIJg9-dwtaPGGARATZrumJcivI',
+                        ...
+                    },
+                    ...
+                ]
         """
 
         url = "https://places.googleapis.com/v1/places:searchText"
@@ -101,8 +118,24 @@ class GooglePlacesClient:
         Parameters
         ----------
         id (str): 店舗ID。例: "ChIJg9-dwtaPGGARATZrumJcivI"
-        """
 
+        Returns:
+        ----------
+        list: 各店舗の必要な情報を含む辞書のリスト。
+            ex) [
+                    {
+                        'id': 'ChIJg9-dwtaPGGARATZrumJcivI',
+                        'name': '店舗名',
+                        'latitude': 35.71452370573787,
+                        'longitude': 139.76181006885508,
+                        'rating': 4.5,
+                        'Urls': 'google mapのURL',
+                        'priceLevel': 2,
+                        'photo': '写真のURL'
+                    }
+                ]
+        """
+        url = "https://places.googleapis.com/v1/places/" + id
         url = "https://places.googleapis.com/v1/places/" + id
         field_mask = ",".join(self.field_mask)
         headers = {
