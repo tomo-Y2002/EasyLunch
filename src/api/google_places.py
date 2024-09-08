@@ -1,6 +1,8 @@
 import requests
 import json
 from typing import Union
+from src.api.google_logging import Logging
+import os
 
 
 class GooglePlacesClient:
@@ -36,6 +38,7 @@ class GooglePlacesClient:
         self.api_key = google_places_api_key
         # field_maskのうちTrueであるキーだけをlistにする
         self.field_mask = [key for key, value in field_mask.items() if value]
+        self.logger = Logging(is_gc=os.environ.get("IS_GOOGLE_CLOUD") == "true")
 
     # condition: dict
     # ex), "condition={large_area": "Z011", "keyword": "カレー",...}
@@ -99,7 +102,11 @@ class GooglePlacesClient:
         }
 
         # Make the POST request
-        response = requests.post(url, headers=headers, json=data)
+        try:
+            response = requests.post(url, headers=headers, json=data)
+        except requests.exceptions.RequestException as e:
+            print(f"Request Error: {e}")
+            self.logger.log_text(f"Request Error: {e}")
         if response.status_code == 200:
             # Process the response
             response = response.json()["places"]
@@ -109,6 +116,7 @@ class GooglePlacesClient:
                 result.append(store)
         else:
             print(f"Error: {response.status_code}, {response.text}")
+            self.logger.log_text(f"Error: {response.status_code}, {response.text}")
         return result
 
     def search_with_id(self, id: str):
