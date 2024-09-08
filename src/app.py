@@ -11,6 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.line.line import LineMessagingClient
 from src.line.utils import create_carousel, get_id
 from src.db.access.chat import ChatDB
+from src.db.access.utils import is_one_hour_passed
 from src.db.access.visit import VisitDB
 from src.llm.llm_call import LLM
 from src.llm.prompt import select_prompt
@@ -91,6 +92,14 @@ def on_reply(event):
     chat_history = chat_db.get(conn=conn, user_id=user_id)
     chat_db.close(conn)
     print("会話履歴の取得完了")
+
+    # 最後の会話から一定時間経過していたら、該当のuser_idの会話履歴を削除
+    if len(chat_history)>0 and is_one_hour_passed(last_access_time=chat_history[-1][-1]):
+        conn = chat_db.connect()
+        chat_db.erase(conn=conn,user_id=user_id)
+        conn.commit()
+        chat_db.close(conn)
+        chat_history = []
 
     # 来店履歴DBから、該当のuser_idの来店履歴を取得
     conn = visit_db.connect()
