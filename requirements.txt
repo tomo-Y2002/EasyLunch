@@ -5,3 +5,4 @@ boto3==1.35.8
 flask==3.0.3
 mysql-connector-python==9.0.0
 google-cloud-logging==3.11.2
+geopy==2.4.1

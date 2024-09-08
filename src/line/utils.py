@@ -1,5 +1,6 @@
 import json
 import copy
+from geopy.distance import geodesic
 
 
 def create_carousel(
@@ -40,22 +41,10 @@ def create_carousel(
             name = "店の名前がありません"
         else:
             name = store["name"]
-        if store["photo_pc_l"] == "":
+        if store["photo"] == "":
             img = "https://imgfp.hotp.jp/IMGH/83/70/P032328370/P032328370_69.jpg"
         else:
-            img = store["photo_pc_l"]
-        if store["catch"] == "":
-            catch = "キャッチコピーがありません"
-        else:
-            catch = store["catch"]
-        if store["address"] == "":
-            address = "住所がありません"
-        else:
-            address = store["address"]
-        if store["budget_name"] == "":
-            price = "予算がありません"
-        else:
-            price = store["budget_name"]
+            img = store["photo"]
         if store["urls"] == "":
             uri = "https://www.hotpepper.jp"
         else:
@@ -64,18 +53,29 @@ def create_carousel(
             id = "J001216679"
         else:
             id = store["id"]
-        if store["mobile_access"] == "":
-            mobile_access = "モバイルアクセスがありません"
+        if store["latitude"] == "":
+            latitude = 0
         else:
-            mobile_access = store["mobile_access"]
+            latitude = float(store["latitude"])
+        if store["longitude"] == "":
+            longitude = 0
+        else:
+            longitude = float(store["longitude"])
+        # if store["rating"] == "":
+        #     rating = 0
+        # else:
+        #     rating = store["rating"]
+        build_2 = (35.71452370573787, 139.76181006885508)
+        dest = (latitude, longitude)
+        distance = geodesic(build_2, dest).m
+        # distanceを50mごとに丸める
+        distance = "ここから約" + str(round(distance / 50) * 50) + "m"
         contents_format["hero"]["url"] = img
         contents_format["hero"]["action"]["uri"] = uri
         contents_format["body"]["contents"][0]["contents"][0]["text"] = name
-        contents_format["body"]["contents"][1]["contents"][0]["text"] = mobile_access
+        contents_format["body"]["contents"][1]["contents"][0]["text"] = distance
         contents_format["footer"]["contents"][0]["action"]["uri"] = uri
-        contents_format["footer"]["contents"][2]["action"]["data"] = (
-            "店のid" + id
-        )
+        contents_format["footer"]["contents"][2]["action"]["data"] = "店のid" + id
 
         data["contents"].append(contents_format)
 
