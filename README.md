@@ -1,6 +1,9 @@
 # EasyLunch_backend
 UMP-JUST 生成AI ハッカソン用 バックエンドリポジトリです。
 
+### 動作例
+https://github.com/user-attachments/assets/350fc850-d593-4578-9053-d464f614d429
+
 ### 初期設定
 #### AWS CLIのインストール
 [リンク](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html)
