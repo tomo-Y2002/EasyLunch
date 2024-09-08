@@ -152,6 +152,7 @@ def on_reply(event):
     # 来店履歴から、ユーザに沿ったものがあればLLMで抽出して返す
     stores_visited = []
     for info in visit_history:
+        logger.log_text(f"来店履歴をAPIで検索開始: {info}")
         res = places_client.search_with_id(id=info[2])
         if len(res) != 0:
             stores_visited.append(res[0])

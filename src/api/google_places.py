@@ -104,6 +104,7 @@ class GooglePlacesClient:
         # Make the POST request
         try:
             response = requests.post(url, headers=headers, json=data)
+            self.logger.log_text(f"Search Essential Response: {response}")
         except requests.exceptions.RequestException as e:
             print(f"Request Error: {e}")
             self.logger.log_text(f"Request Error: {e}")
@@ -156,6 +157,7 @@ class GooglePlacesClient:
         }
         try:
             response = requests.get(url, headers=headers, params=params)
+            self.logger.log_text(f"Search with id Response: {response}")
         except requests.exceptions.RequestException as e:
             print(f"Request Error: {e}")
             self.logger.log_text(f"Request Error: {e}")
