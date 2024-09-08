@@ -72,7 +72,9 @@ def create_carousel(
         distance = "ここから約" + str(round(distance / 50) * 50) + "m"
         contents_format["hero"]["url"] = img
         contents_format["hero"]["action"]["uri"] = uri
-        contents_format["body"]["contents"][0]["contents"][0]["text"] = name
+        print(contents_format["body"]["contents"][0]["contents"])
+        contents_format["body"]["contents"][0]["contents"][0]["contents"][0]["text"] = name
+        #contents_format["body"]["contents"][0]["contents"][1]["contents"][1]["text"] = rating
         contents_format["body"]["contents"][1]["contents"][0]["text"] = distance
         contents_format["footer"]["contents"][0]["action"]["uri"] = uri
         contents_format["footer"]["contents"][2]["action"]["data"] = "店のid" + id

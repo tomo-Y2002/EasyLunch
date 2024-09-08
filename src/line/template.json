@@ -18,16 +18,45 @@
     "contents": [
       {
         "type": "box",
-        "layout": "vertical",
+        "layout": "horizontal",
         "contents": [
           {
-            "type": "text",
-            "text": "",
-            "size": "xl",
-            "weight": "bold"
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "",
+                "size": "xl",
+                "weight": "bold",
+                "align": "start"
+              }
+            ],
+            "width": "200px"
+          },
+          {
+            "type": "box",
+            "layout": "baseline",
+            "contents": [
+              {
+                "type": "icon",
+                "url": "https://icon-pit.com/wp-content/uploads/2018/10/star_icon_671.png",
+                "offsetTop": "10px",
+                "margin": "20px",
+                "size": "17px"
+              },
+              {
+                "type": "text",
+                "text": "",
+                "offsetTop": "8.4px",
+                "offsetEnd": "none",
+                "align": "end",
+                "offsetStart": "0px",
+                "size": "17px"
+              }
+            ]
           }
-        ],
-        "width": "230px"
+        ]
       },
       {
         "type": "box",
@@ -58,7 +87,7 @@
         "action": {
           "type": "uri",
           "label": "開く",
-          "uri": ""
+          "uri": "http://linecorp.com/"
         },
         "height": "sm",
         "style": "secondary",
@@ -75,7 +104,7 @@
         "action": {
           "type": "postback",
           "label": "保存",
-          "data": ""
+          "data": "店のid"
         },
         "style": "primary",
         "color": "#ff914d",
