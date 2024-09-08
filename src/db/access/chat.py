@@ -2,8 +2,8 @@ from src.db.access.connector import MySQLManager
 
 
 class ChatDB(MySQLManager):
-    def __init__(self, host, user, password, database):
-        super().__init__(host, user, password, database)
+    def __init__(self, host, user, password, database, is_gc=False):
+        super().__init__(host, user, password, database, is_gc)
         self.table_name = "chat_history"
 
     def get(self, conn, user_id: str):

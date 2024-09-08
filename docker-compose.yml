@@ -1,0 +1,13 @@
+services: 
+  web:
+    container_name: easylunch_server
+    build: .
+    ports:
+      - "5000:5000"
+    stdin_open: true
+    tty: true
+
+networks:
+  default:
+    external: true
+    name: easylunch
