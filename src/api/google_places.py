@@ -154,7 +154,11 @@ class GooglePlacesClient:
         params = {
             "languageCode": "ja",
         }
-        response = requests.get(url, headers=headers, params=params)
+        try:
+            response = requests.get(url, headers=headers, params=params)
+        except requests.exceptions.RequestException as e:
+            print(f"Request Error: {e}")
+            self.logger.log_text(f"Request Error: {e}")
         if response.status_code == 200:
             response = response.json()
             response = self.format_result(response)
@@ -163,6 +167,7 @@ class GooglePlacesClient:
             return result
         else:
             print(f"Error: {response.status_code}, {response.text}")
+            self.logger.log_text(f"Error: {response.status_code}, {response.text}")
 
     def photo_url(self, name: str):
         """

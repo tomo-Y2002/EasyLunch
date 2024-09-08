@@ -147,6 +147,7 @@ def on_reply(event):
     stores = places_client.search_essential(query, count=5)
     print("Google Placesでの検索完了")
     logger.log_text("Google Placesでの検索完了")
+    logger.log_text(f"検索結果: {stores}")
 
     # 来店履歴から、ユーザに沿ったものがあればLLMで抽出して返す
     stores_visited = []
