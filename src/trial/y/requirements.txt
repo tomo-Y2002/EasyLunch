@@ -1,0 +1,4 @@
+pyyaml
+line-bot-sdk
+openai
+boto3

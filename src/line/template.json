@@ -1,0 +1,89 @@
+{
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "url": "",
+    "size": "full",
+    "action": {
+      "type": "uri",
+      "label": "action",
+      "uri": ""
+    },
+    "aspectRatio": "20:16.5",
+    "aspectMode": "cover"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "",
+            "size": "xl",
+            "weight": "bold"
+          }
+        ],
+        "width": "230px"
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "",
+            "size": "sm"
+          }
+        ],
+        "offsetTop": "none",
+        "paddingTop": "20px",
+        "offsetBottom": "none"
+      }
+    ],
+    "paddingTop": "17px",
+    "paddingBottom": "0px",
+    "paddingStart": "17px",
+    "paddingEnd": "17px"
+  },
+  "footer": {
+    "type": "box",
+    "layout": "horizontal",
+    "contents": [
+      {
+        "type": "button",
+        "action": {
+          "type": "uri",
+          "label": "開く",
+          "uri": ""
+        },
+        "height": "sm",
+        "style": "secondary",
+        "color": "#eeeeee"
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [],
+        "width": "40px"
+      },
+      {
+        "type": "button",
+        "action": {
+          "type": "postback",
+          "label": "保存",
+          "data": ""
+        },
+        "style": "primary",
+        "color": "#ff914d",
+        "height": "sm"
+      }
+    ],
+    "paddingStart": "17px",
+    "paddingEnd": "17px",
+    "paddingBottom": "17px"
+  }
+}
