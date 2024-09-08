@@ -192,7 +192,18 @@ class GooglePlacesClient:
         if "priceLevel" in store:
             result["priceLevel"] = store["priceLevel"]
         if "photos" in store:
-            result["photo"] = self.photo_url(store["photos"][1]["name"])
+            if len(store["photos"]) > 1:
+                result["photo"] = self.photo_url(store["photos"][1]["name"])
+            elif len(store["photos"]) > 0:
+                result["photo"] = self.photo_url(store["photos"][0]["name"])
+            else:
+                result["photo"] = (
+                    "https://lh3.googleusercontent.com/places/ANXAkqFske5p7KCTaX9Q5B293LxPJBJCnJzZDZLu7OEWfNVPds2bs3ONTJ3JPvbITp70Xq5kFgCgjd4J8LHNuDZYYPKThshazXafdjE=s4800-h1000"
+                )
+        else:
+            result["photo"] = (
+                "https://lh3.googleusercontent.com/places/ANXAkqFske5p7KCTaX9Q5B293LxPJBJCnJzZDZLu7OEWfNVPds2bs3ONTJ3JPvbITp70Xq5kFgCgjd4J8LHNuDZYYPKThshazXafdjE=s4800-h1000"
+            )
         return result
 
     # 結果の店名を表示
