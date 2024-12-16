@@ -61,10 +61,10 @@ def create_carousel(
             longitude = 0
         else:
             longitude = float(store["longitude"])
-        # if store["rating"] == "":
-        #     rating = 0
-        # else:
-        #     rating = store["rating"]
+        if store["rating"] == "":
+            rating = 0
+        else:
+            rating = store["rating"]
         build_2 = (35.71452370573787, 139.76181006885508)
         dest = (latitude, longitude)
         distance = geodesic(build_2, dest).m
@@ -72,7 +72,8 @@ def create_carousel(
         distance = "ここから約" + str(round(distance / 50) * 50) + "m"
         contents_format["hero"]["url"] = img
         contents_format["hero"]["action"]["uri"] = uri
-        contents_format["body"]["contents"][0]["contents"][0]["text"] = name
+        contents_format["body"]["contents"][0]["contents"][0]["contents"][0]["text"] = name
+        contents_format["body"]["contents"][0]["contents"][1]["contents"][1]["text"] = "{rating}"
         contents_format["body"]["contents"][1]["contents"][0]["text"] = distance
         contents_format["footer"]["contents"][0]["action"]["uri"] = uri
         contents_format["footer"]["contents"][2]["action"]["data"] = "店のid" + id
